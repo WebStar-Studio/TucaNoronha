@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { TravelPreferences } from '@/store/authStore';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://xyzcompany.supabase.co";
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "your-anon-key";
@@ -12,18 +13,60 @@ export type SupabaseUser = {
   last_name?: string;
   profile_picture?: string;
   role: string;
+  // Travel preferences fields 
+  travel_dates?: { from: string; to: string };
+  group_size?: number;
+  travel_interests?: string[];
+  accommodation_preference?: string;
+  dietary_restrictions?: string[];
+  activity_level?: string;
+  transport_preference?: string;
+  special_requirements?: string;
+  previous_visit?: boolean;
 };
 
-export async function signUp(email: string, password: string, firstName: string, lastName: string) {
+export async function signUp(
+  email: string, 
+  password: string, 
+  firstName: string, 
+  lastName: string,
+  travelPreferences?: TravelPreferences
+) {
+  // Prepare metadata object with basic user info
+  const userMetadata: Record<string, any> = {
+    first_name: firstName,
+    last_name: lastName,
+    role: 'user',
+  };
+
+  // Add travel preferences to metadata if provided
+  if (travelPreferences) {
+    // Convert dates to strings if they exist
+    const travel_dates = travelPreferences.travelDates ? {
+      from: travelPreferences.travelDates.from.toISOString(),
+      to: travelPreferences.travelDates.to.toISOString()
+    } : undefined;
+
+    // Add all travel preferences
+    Object.assign(userMetadata, {
+      travel_dates,
+      group_size: travelPreferences.groupSize,
+      travel_interests: travelPreferences.travelInterests,
+      accommodation_preference: travelPreferences.accommodationPreference,
+      dietary_restrictions: travelPreferences.dietaryRestrictions,
+      activity_level: travelPreferences.activityLevel,
+      transport_preference: travelPreferences.transportPreference,
+      special_requirements: travelPreferences.specialRequirements,
+      previous_visit: travelPreferences.previousVisit,
+    });
+  }
+
+  // Register user with metadata
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: {
-        first_name: firstName,
-        last_name: lastName,
-        role: 'user',
-      }
+      data: userMetadata
     }
   });
   
@@ -69,15 +112,52 @@ export async function getCurrentUser() {
   
   const { data: { user } } = await supabase.auth.getUser();
   
+  if (!user) {
+    return { user: null, error: null };
+  }
+  
+  // Extract user metadata
+  const { 
+    id,
+    email,
+    user_metadata: {
+      first_name,
+      last_name,
+      profile_picture,
+      role,
+      // Travel preferences
+      travel_dates,
+      group_size,
+      travel_interests,
+      accommodation_preference,
+      dietary_restrictions,
+      activity_level,
+      transport_preference,
+      special_requirements,
+      previous_visit
+    }
+  } = user;
+  
+  // Return complete user object with travel preferences
   return { 
-    user: user ? {
-      id: user.id,
-      email: user.email as string,
-      first_name: user.user_metadata.first_name,
-      last_name: user.user_metadata.last_name,
-      profile_picture: user.user_metadata.profile_picture,
-      role: user.user_metadata.role,
-    } as SupabaseUser : null, 
+    user: {
+      id,
+      email: email as string,
+      first_name,
+      last_name,
+      profile_picture,
+      role,
+      // Include travel preferences if they exist
+      ...(travel_dates && { travel_dates }),
+      ...(group_size !== undefined && { group_size }),
+      ...(travel_interests && { travel_interests }),
+      ...(accommodation_preference && { accommodation_preference }),
+      ...(dietary_restrictions && { dietary_restrictions }),
+      ...(activity_level && { activity_level }),
+      ...(transport_preference && { transport_preference }),
+      ...(special_requirements && { special_requirements }),
+      ...(previous_visit !== undefined && { previous_visit }),
+    } as SupabaseUser, 
     error: null 
   };
 }

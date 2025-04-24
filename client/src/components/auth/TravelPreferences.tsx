@@ -17,6 +17,8 @@ import {
 import { DateRange } from "react-day-picker";
 import { format, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
+import { TravelPreferences as TravelPreferencesType } from '@/store/authStore';
+
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -138,8 +140,9 @@ const steps: Step[] = [
   }
 ];
 
-type TravelPreferencesData = {
-  travelDates: DateRange | undefined;
+// Extend travel preferences with needed props for the component
+export type TravelPreferencesData = {
+  travelDates: { from: Date; to: Date } | undefined;
   groupSize: number;
   travelInterests: string[];
   accommodationPreference: string;
@@ -378,8 +381,31 @@ export function TravelPreferences({ onComplete, isSubmitting = false }: TravelPr
                       initialFocus
                       mode="range"
                       defaultMonth={travelPrefs.travelDates?.from}
-                      selected={travelPrefs.travelDates}
-                      onSelect={(range) => setTravelPrefs({ ...travelPrefs, travelDates: range })}
+                      selected={{
+                        from: travelPrefs.travelDates?.from,
+                        to: travelPrefs.travelDates?.to
+                      }}
+                      onSelect={(range) => {
+                        if (range?.from && range?.to) {
+                          setTravelPrefs({ 
+                            ...travelPrefs, 
+                            travelDates: { 
+                              from: range.from, 
+                              to: range.to 
+                            } 
+                          });
+                        } else if (range?.from) {
+                          setTravelPrefs({ 
+                            ...travelPrefs, 
+                            travelDates: { 
+                              from: range.from, 
+                              to: travelPrefs.travelDates?.to || range.from
+                            } 
+                          });
+                        } else {
+                          setTravelPrefs({ ...travelPrefs, travelDates: undefined });
+                        }
+                      }}
                       numberOfMonths={2}
                       disabled={(date) => date < new Date()}
                     />

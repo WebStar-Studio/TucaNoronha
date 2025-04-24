@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, PartyPopper } from 'lucide-react';
 import { Link } from 'wouter';
-import TravelPreferences from './TravelPreferences';
+import TravelPreferences, { TravelPreferencesData } from './TravelPreferences';
 
 // Type for travel preferences data
 type TravelPreferencesData = {
