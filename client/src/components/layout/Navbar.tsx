@@ -60,14 +60,14 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <span
-                className={`font-montserrat font-bold text-2xl ${scrolled ? "text-primary" : "text-white"}`}
+                className={`font-playfair italic font-semibold text-2xl tracking-wide ${scrolled ? "text-primary" : "text-white"}`}
               >
-                tuca
+                Tuca
               </span>
               <span
-                className={`font-montserrat font-bold text-2xl ${scrolled ? "text-foreground" : "text-white"}`}
+                className={`font-playfair italic font-semibold text-2xl tracking-wide ${scrolled ? "text-foreground" : "text-white"}`}
               >
-                noronha
+                Noronha
               </span>
             </Link>
             <div className="hidden lg:ml-10 lg:flex lg:space-x-8">
