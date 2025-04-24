@@ -60,12 +60,12 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <span
-                className={`font-playfair italic font-semibold text-2xl tracking-wide ${scrolled ? "text-primary" : "text-white"}`}
+                className={`font-playfair font-semibold text-2xl tracking-wide ${scrolled ? "text-primary" : "text-white"}`}
               >
                 Tuca
               </span>
               <span
-                className={`font-playfair italic font-semibold text-2xl tracking-wide ${scrolled ? "text-foreground" : "text-white"}`}
+                className={`font-playfair font-semibold text-2xl tracking-wide ${scrolled ? "text-foreground" : "text-white"}`}
               >
                 Noronha
               </span>
