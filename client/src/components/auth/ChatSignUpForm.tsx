@@ -224,9 +224,9 @@ export default function ChatSignUpForm() {
             
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmitAccount)} className="space-y-5">
-                {/* Fixed height container for conversation */}
-                <div className="h-[400px] relative overflow-hidden">
-                  <div className={`absolute w-full transition-all duration-500 ${accountStep === 'name' ? 'opacity-100 z-10' : 'opacity-0 -z-10'}`}>
+                {/* Fixed height container for conversation - reduced height */}
+                <div className="h-[250px] relative overflow-hidden">
+                  <div className={`absolute w-full transition-all duration-500 ${accountStep === 'name' ? 'opacity-100 z-10' : 'opacity-0 -z-10 hidden'}`}>
                     {/* Name step */}
                     <div className="space-y-5">
                       <div className="backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
@@ -273,7 +273,7 @@ export default function ChatSignUpForm() {
                     </div>
                   </div>
 
-                  <div className={`absolute w-full transition-all duration-500 ${accountStep === 'email' ? 'opacity-100 z-10' : 'opacity-0 -z-10'}`}>
+                  <div className={`absolute w-full transition-all duration-500 ${accountStep === 'email' ? 'opacity-100 z-10' : 'opacity-0 -z-10 hidden'}`}>
                     {/* Email step */}
                     <div className="space-y-5">
                       <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
@@ -313,7 +313,7 @@ export default function ChatSignUpForm() {
                     </div>
                   </div>
 
-                  <div className={`absolute w-full transition-all duration-500 ${accountStep === 'password' ? 'opacity-100 z-10' : 'opacity-0 -z-10'}`}>
+                  <div className={`absolute w-full transition-all duration-500 ${accountStep === 'password' ? 'opacity-100 z-10' : 'opacity-0 -z-10 hidden'}`}>
                     {/* Password step */}
                     <div className="space-y-5">
                       <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
@@ -393,7 +393,7 @@ export default function ChatSignUpForm() {
                     </div>
                   </div>
 
-                  <div className={`absolute w-full transition-all duration-500 ${accountStep === 'review' ? 'opacity-100 z-10' : 'opacity-0 -z-10'}`}>
+                  <div className={`absolute w-full transition-all duration-500 ${accountStep === 'review' ? 'opacity-100 z-10' : 'opacity-0 -z-10 hidden'}`}>
                     {/* Review step */}
                     <div className="space-y-5">
                       <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">

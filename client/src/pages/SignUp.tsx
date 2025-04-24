@@ -45,7 +45,7 @@ export default function SignUp() {
       </div>
       
       {/* Content */}
-      <div className="relative z-10 w-full max-w-md px-4 mt-16">
+      <div className="relative z-10 w-full max-w-2xl px-4 mt-16 pb-16">
         <Card className="glass-card border-white/10 shadow-xl backdrop-blur-lg">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-playfair text-center text-foreground">Create an Account</CardTitle>
