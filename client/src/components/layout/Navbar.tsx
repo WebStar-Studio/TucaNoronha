@@ -163,7 +163,7 @@ export default function Navbar() {
                   className={
                     scrolled
                       ? "btn-gradient"
-                      : "border-white text-white hover:bg-white hover:text-foreground"
+                      : "border-white text-gray-800 bg-white/80 hover:bg-white hover:text-gray-900"
                   }
                   onClick={() => setLocation("/signup")}
                 >
