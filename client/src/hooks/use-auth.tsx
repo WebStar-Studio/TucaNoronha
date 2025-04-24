@@ -8,13 +8,18 @@ import { User } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
+type AuthResponse = {
+  message: string;
+  user: User;
+};
+
 type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   error: Error | null;
-  loginMutation: UseMutationResult<User, Error, LoginData>;
+  loginMutation: UseMutationResult<AuthResponse, Error, LoginData>;
   logoutMutation: UseMutationResult<void, Error, void>;
-  registerMutation: UseMutationResult<User, Error, RegisterData>;
+  registerMutation: UseMutationResult<AuthResponse, Error, RegisterData>;
 };
 
 type LoginData = {
@@ -45,15 +50,17 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   const {
-    data: user,
+    data: response,
     error,
     isLoading,
-  } = useQuery<User | null, Error>({
+  } = useQuery<{ user: User } | null, Error>({
     queryKey: ["/api/auth/me"],
     queryFn: getQueryFn({ on401: "returnNull" }),
   });
+  
+  const user = response?.user || null;
 
-  const loginMutation = useMutation({
+  const loginMutation = useMutation<AuthResponse, Error, LoginData>({
     mutationFn: async (credentials: LoginData) => {
       const res = await apiRequest("POST", "/api/auth/login", credentials);
       if (!res.ok) {
@@ -62,11 +69,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       return await res.json();
     },
-    onSuccess: (user: User) => {
-      queryClient.setQueryData(["/api/auth/me"], user);
+    onSuccess: (data) => {
+      queryClient.setQueryData(["/api/auth/me"], { user: data.user });
       toast({
         title: "Welcome back!",
-        description: `Logged in as ${user.email}`,
+        description: `Logged in as ${data.user.email}`,
       });
     },
     onError: (error: Error) => {
@@ -78,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  const registerMutation = useMutation({
+  const registerMutation = useMutation<AuthResponse, Error, RegisterData>({
     mutationFn: async (userData: RegisterData) => {
       const res = await apiRequest("POST", "/api/auth/register", userData);
       if (!res.ok) {
@@ -87,8 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       return await res.json();
     },
-    onSuccess: (user: User) => {
-      queryClient.setQueryData(["/api/auth/me"], user);
+    onSuccess: (data) => {
+      queryClient.setQueryData(["/api/auth/me"], { user: data.user });
       toast({
         title: "Registration successful!",
         description: "Your personalized paradise adventure awaits.",
