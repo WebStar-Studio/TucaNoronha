@@ -20,19 +20,6 @@ import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, PartyPopper } from 'lucide
 import { Link } from 'wouter';
 import TravelPreferences, { TravelPreferencesData } from './TravelPreferences';
 
-// Type for travel preferences data
-type TravelPreferencesData = {
-  travelDates: { from: Date; to: Date } | undefined;
-  groupSize: number;
-  travelInterests: string[];
-  accommodationPreference: string;
-  dietaryRestrictions: string[];
-  activityLevel: string;
-  transportPreference: string;
-  specialRequirements: string;
-  previousVisit: boolean;
-};
-
 const signUpSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),

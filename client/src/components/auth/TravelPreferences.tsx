@@ -158,7 +158,7 @@ interface TravelPreferencesProps {
   isSubmitting?: boolean;
 }
 
-export function TravelPreferences({ onComplete, isSubmitting = false }: TravelPreferencesProps) {
+function TravelPreferencesComponent({ onComplete, isSubmitting = false }: TravelPreferencesProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [travelPrefs, setTravelPrefs] = useState<TravelPreferencesData>({
@@ -664,4 +664,5 @@ export function TravelPreferences({ onComplete, isSubmitting = false }: TravelPr
   );
 }
 
-export default TravelPreferences;
+// Export the component
+export default TravelPreferencesComponent;
