@@ -5,7 +5,8 @@ import {
   packages, type Package, type InsertPackage,
   vehicleRentals, type VehicleRental, type InsertVehicleRental,
   restaurants, type Restaurant, type InsertRestaurant,
-  testimonials, type Testimonial, type InsertTestimonial
+  testimonials, type Testimonial, type InsertTestimonial,
+  favorites, type Favorite, type InsertFavorite
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -402,6 +403,53 @@ export class MemStorage implements IStorage {
     this.testimonials.set(id, updatedTestimonial);
     
     return updatedTestimonial;
+  }
+  
+  // Favorite/Wishlist operations
+  async getUserFavorites(userId: number): Promise<Favorite[]> {
+    return Array.from(this.favorites.values()).filter(
+      (favorite) => favorite.userId === userId
+    );
+  }
+
+  async getFavoriteById(id: number): Promise<Favorite | undefined> {
+    return this.favorites.get(id);
+  }
+
+  async addFavorite(favoriteData: InsertFavorite): Promise<Favorite> {
+    const id = this.currentId.favorites++;
+    const favorite: Favorite = {
+      ...favoriteData,
+      id,
+      createdAt: new Date()
+    };
+    
+    this.favorites.set(id, favorite);
+    return favorite;
+  }
+
+  async updateFavoriteNotes(id: number, notes: string): Promise<Favorite> {
+    const favorite = await this.getFavoriteById(id);
+    
+    if (!favorite) {
+      throw new Error(`Favorite with ID ${id} not found`);
+    }
+    
+    const updatedFavorite = { ...favorite, notes };
+    this.favorites.set(id, updatedFavorite);
+    
+    return updatedFavorite;
+  }
+
+  async deleteFavorite(id: number): Promise<void> {
+    this.favorites.delete(id);
+  }
+
+  async checkIsFavorite(userId: number, itemType: string, itemId: number): Promise<boolean> {
+    const userFavorites = await this.getUserFavorites(userId);
+    return userFavorites.some(
+      (favorite) => favorite.itemType === itemType && favorite.itemId === itemId
+    );
   }
 
   // Create sample data
@@ -872,6 +920,61 @@ export class DatabaseStorage implements IStorage {
     }
     
     return testimonial;
+  }
+
+  // Favorite/Wishlist operations
+  async getUserFavorites(userId: number): Promise<Favorite[]> {
+    return db.select()
+      .from(favorites)
+      .where(eq(favorites.userId, userId));
+  }
+
+  async getFavoriteById(id: number): Promise<Favorite | undefined> {
+    const [favorite] = await db.select()
+      .from(favorites)
+      .where(eq(favorites.id, id));
+    
+    return favorite;
+  }
+
+  async addFavorite(favoriteData: InsertFavorite): Promise<Favorite> {
+    const [favorite] = await db.insert(favorites)
+      .values(favoriteData)
+      .returning();
+    
+    return favorite;
+  }
+
+  async updateFavoriteNotes(id: number, notes: string): Promise<Favorite> {
+    const [favorite] = await db.update(favorites)
+      .set({ notes })
+      .where(eq(favorites.id, id))
+      .returning();
+    
+    if (!favorite) {
+      throw new Error(`Favorite with ID ${id} not found`);
+    }
+    
+    return favorite;
+  }
+
+  async deleteFavorite(id: number): Promise<void> {
+    await db.delete(favorites)
+      .where(eq(favorites.id, id));
+  }
+
+  async checkIsFavorite(userId: number, itemType: string, itemId: number): Promise<boolean> {
+    const [favorite] = await db.select()
+      .from(favorites)
+      .where(
+        and(
+          eq(favorites.userId, userId),
+          eq(favorites.itemType, itemType),
+          eq(favorites.itemId, itemId)
+        )
+      );
+    
+    return !!favorite;
   }
 
   // Create initial admin user if needed
