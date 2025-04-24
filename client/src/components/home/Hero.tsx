@@ -1,20 +1,16 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon, Users, ChevronDown } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { format } from 'date-fns';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 export default function Hero() {
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [guests, setGuests] = useState<string>('2');
   const [, setLocation] = useLocation();
 
-  const handleExplore = () => {
-    // Navigate to experiences page with query parameters
-    setLocation(`/experiences${date ? `?date=${format(date, 'yyyy-MM-dd')}` : ''}${guests ? `&guests=${guests}` : ''}`);
+  const handleExploreExperiences = () => {
+    setLocation('/experiences');
+  };
+  
+  const handleExplorePackages = () => {
+    setLocation('/packages');
   };
 
   return (
@@ -36,52 +32,22 @@ export default function Hero() {
           Exclusive experiences in Brazil's most breathtaking archipelago
         </p>
         
-        {/* Search */}
-        <div className="w-full max-w-4xl mt-12 glass-card rounded-xl p-4 sm:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="relative rounded-lg bg-white shadow-sm">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal pl-10 py-6 border-0">
-                    <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    {date ? format(date, 'PPP') : <span className="text-gray-500">When are you visiting?</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    initialFocus
-                    disabled={(date) => date < new Date()}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            
-            <div className="relative rounded-lg bg-white shadow-sm">
-              <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <Select value={guests} onValueChange={setGuests}>
-                <SelectTrigger className="w-full border-0 pl-10 py-6">
-                  <SelectValue placeholder="2 Guests" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Guest</SelectItem>
-                  <SelectItem value="2">2 Guests</SelectItem>
-                  <SelectItem value="3">3 Guests</SelectItem>
-                  <SelectItem value="4">4 Guests</SelectItem>
-                  <SelectItem value="5">5 Guests</SelectItem>
-                  <SelectItem value="6+">6+ Guests</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="relative rounded-lg">
-              <Button onClick={handleExplore} className="w-full btn-gradient py-6 px-4 rounded-lg font-medium shadow-sm">
-                Explore Now
-              </Button>
-            </div>
-          </div>
+        {/* Call-to-action buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-12 justify-center">
+          <Button 
+            onClick={handleExploreExperiences} 
+            className="px-8 py-6 rounded-full bg-white text-gray-800 hover:bg-gray-100 hover:text-gray-900 text-lg font-medium shadow-lg flex items-center transition-all"
+          >
+            Explore Experiences
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+          
+          <Button 
+            onClick={handleExplorePackages} 
+            className="px-8 py-6 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 text-lg font-medium shadow-lg flex items-center transition-all"
+          >
+            See Packages
+          </Button>
         </div>
         
         <div className="mt-8 flex flex-wrap justify-center gap-4">
