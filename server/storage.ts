@@ -8,6 +8,8 @@ import {
   testimonials, type Testimonial, type InsertTestimonial
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq, desc, sql, and, isNull } from "drizzle-orm";
 
 // Comprehensive storage interface that handles all entities
 export interface IStorage {
@@ -564,4 +566,319 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(userData: InsertUser & { firstName?: string; lastName?: string; role?: string; profilePicture?: string }): Promise<User> {
+    const [user] = await db.insert(users).values({
+      email: userData.email,
+      password: userData.password,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      role: userData.role || 'user',
+      profilePicture: userData.profilePicture
+    }).returning();
+    
+    return user;
+  }
+
+  async updateUser(id: number, userData: Partial<User>): Promise<User> {
+    const [user] = await db.update(users)
+      .set(userData)
+      .where(eq(users.id, id))
+      .returning();
+    
+    if (!user) {
+      throw new Error(`User with ID ${id} not found`);
+    }
+    
+    return user;
+  }
+
+  // Experience operations
+  async getAllExperiences(): Promise<Experience[]> {
+    return db.select().from(experiences);
+  }
+
+  async getFeaturedExperiences(): Promise<Experience[]> {
+    return db.select()
+      .from(experiences)
+      .where(eq(experiences.featured, true));
+  }
+
+  async getExperienceById(id: number): Promise<Experience | undefined> {
+    const [experience] = await db.select()
+      .from(experiences)
+      .where(eq(experiences.id, id));
+    
+    return experience;
+  }
+
+  async createExperience(experienceData: InsertExperience): Promise<Experience> {
+    const [experience] = await db.insert(experiences)
+      .values(experienceData)
+      .returning();
+    
+    return experience;
+  }
+
+  async updateExperience(id: number, experienceData: Partial<InsertExperience>): Promise<Experience> {
+    const [experience] = await db.update(experiences)
+      .set(experienceData)
+      .where(eq(experiences.id, id))
+      .returning();
+    
+    if (!experience) {
+      throw new Error(`Experience with ID ${id} not found`);
+    }
+    
+    return experience;
+  }
+
+  async deleteExperience(id: number): Promise<void> {
+    await db.delete(experiences)
+      .where(eq(experiences.id, id));
+  }
+
+  // Accommodation operations
+  async getAllAccommodations(): Promise<Accommodation[]> {
+    return db.select().from(accommodations);
+  }
+
+  async getFeaturedAccommodations(): Promise<Accommodation[]> {
+    return db.select()
+      .from(accommodations)
+      .where(eq(accommodations.featured, true));
+  }
+
+  async getAccommodationById(id: number): Promise<Accommodation | undefined> {
+    const [accommodation] = await db.select()
+      .from(accommodations)
+      .where(eq(accommodations.id, id));
+    
+    return accommodation;
+  }
+
+  async createAccommodation(accommodationData: InsertAccommodation): Promise<Accommodation> {
+    const [accommodation] = await db.insert(accommodations)
+      .values(accommodationData)
+      .returning();
+    
+    return accommodation;
+  }
+
+  async updateAccommodation(id: number, accommodationData: Partial<InsertAccommodation>): Promise<Accommodation> {
+    const [accommodation] = await db.update(accommodations)
+      .set(accommodationData)
+      .where(eq(accommodations.id, id))
+      .returning();
+    
+    if (!accommodation) {
+      throw new Error(`Accommodation with ID ${id} not found`);
+    }
+    
+    return accommodation;
+  }
+
+  async deleteAccommodation(id: number): Promise<void> {
+    await db.delete(accommodations)
+      .where(eq(accommodations.id, id));
+  }
+
+  // Package operations
+  async getAllPackages(): Promise<Package[]> {
+    return db.select().from(packages);
+  }
+
+  async getFeaturedPackages(): Promise<Package[]> {
+    return db.select()
+      .from(packages)
+      .where(eq(packages.featured, true));
+  }
+
+  async getPackageById(id: number): Promise<Package | undefined> {
+    const [pkg] = await db.select()
+      .from(packages)
+      .where(eq(packages.id, id));
+    
+    return pkg;
+  }
+
+  async createPackage(packageData: InsertPackage): Promise<Package> {
+    const [pkg] = await db.insert(packages)
+      .values(packageData)
+      .returning();
+    
+    return pkg;
+  }
+
+  async updatePackage(id: number, packageData: Partial<InsertPackage>): Promise<Package> {
+    const [pkg] = await db.update(packages)
+      .set(packageData)
+      .where(eq(packages.id, id))
+      .returning();
+    
+    if (!pkg) {
+      throw new Error(`Package with ID ${id} not found`);
+    }
+    
+    return pkg;
+  }
+
+  async deletePackage(id: number): Promise<void> {
+    await db.delete(packages)
+      .where(eq(packages.id, id));
+  }
+
+  // Vehicle operations
+  async getAllVehicles(): Promise<VehicleRental[]> {
+    return db.select().from(vehicleRentals);
+  }
+
+  async getVehicleById(id: number): Promise<VehicleRental | undefined> {
+    const [vehicle] = await db.select()
+      .from(vehicleRentals)
+      .where(eq(vehicleRentals.id, id));
+    
+    return vehicle;
+  }
+
+  async createVehicle(vehicleData: InsertVehicleRental): Promise<VehicleRental> {
+    const [vehicle] = await db.insert(vehicleRentals)
+      .values(vehicleData)
+      .returning();
+    
+    return vehicle;
+  }
+
+  async updateVehicle(id: number, vehicleData: Partial<InsertVehicleRental>): Promise<VehicleRental> {
+    const [vehicle] = await db.update(vehicleRentals)
+      .set(vehicleData)
+      .where(eq(vehicleRentals.id, id))
+      .returning();
+    
+    if (!vehicle) {
+      throw new Error(`Vehicle with ID ${id} not found`);
+    }
+    
+    return vehicle;
+  }
+
+  async deleteVehicle(id: number): Promise<void> {
+    await db.delete(vehicleRentals)
+      .where(eq(vehicleRentals.id, id));
+  }
+
+  // Restaurant operations
+  async getAllRestaurants(): Promise<Restaurant[]> {
+    return db.select().from(restaurants);
+  }
+
+  async getFeaturedRestaurants(): Promise<Restaurant[]> {
+    return db.select()
+      .from(restaurants)
+      .where(eq(restaurants.featured, true));
+  }
+
+  async getRestaurantById(id: number): Promise<Restaurant | undefined> {
+    const [restaurant] = await db.select()
+      .from(restaurants)
+      .where(eq(restaurants.id, id));
+    
+    return restaurant;
+  }
+
+  async createRestaurant(restaurantData: InsertRestaurant): Promise<Restaurant> {
+    const [restaurant] = await db.insert(restaurants)
+      .values(restaurantData)
+      .returning();
+    
+    return restaurant;
+  }
+
+  async updateRestaurant(id: number, restaurantData: Partial<InsertRestaurant>): Promise<Restaurant> {
+    const [restaurant] = await db.update(restaurants)
+      .set(restaurantData)
+      .where(eq(restaurants.id, id))
+      .returning();
+    
+    if (!restaurant) {
+      throw new Error(`Restaurant with ID ${id} not found`);
+    }
+    
+    return restaurant;
+  }
+
+  async deleteRestaurant(id: number): Promise<void> {
+    await db.delete(restaurants)
+      .where(eq(restaurants.id, id));
+  }
+
+  // Testimonial operations
+  async getAllTestimonials(): Promise<Testimonial[]> {
+    return db.select().from(testimonials);
+  }
+
+  async getApprovedTestimonials(): Promise<Testimonial[]> {
+    return db.select()
+      .from(testimonials)
+      .where(eq(testimonials.approved, true));
+  }
+
+  async getTestimonialById(id: number): Promise<Testimonial | undefined> {
+    const [testimonial] = await db.select()
+      .from(testimonials)
+      .where(eq(testimonials.id, id));
+    
+    return testimonial;
+  }
+
+  async createTestimonial(testimonialData: InsertTestimonial): Promise<Testimonial> {
+    const [testimonial] = await db.insert(testimonials)
+      .values(testimonialData)
+      .returning();
+    
+    return testimonial;
+  }
+
+  async approveTestimonial(id: number): Promise<Testimonial> {
+    const [testimonial] = await db.update(testimonials)
+      .set({ approved: true })
+      .where(eq(testimonials.id, id))
+      .returning();
+    
+    if (!testimonial) {
+      throw new Error(`Testimonial with ID ${id} not found`);
+    }
+    
+    return testimonial;
+  }
+
+  // Create initial admin user if needed
+  async createInitialAdminIfNeeded() {
+    const adminUser = await this.getUserByEmail('admin@tucanoronha.com');
+    
+    if (!adminUser) {
+      console.log('Creating admin user...');
+      await this.createUser({
+        email: 'admin@tucanoronha.com',
+        password: 'admin123',
+        firstName: 'Admin',
+        lastName: 'User',
+        role: 'admin'
+      });
+    }
+  }
+}
+
+// Instantiate the storage implementation
+export const storage = new DatabaseStorage();

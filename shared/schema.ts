@@ -1,6 +1,7 @@
 import { pgTable, text, serial, integer, boolean, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { relations } from "drizzle-orm";
 
 // User schema
 export const users = pgTable("users", {
@@ -54,6 +55,12 @@ export const packages = pgTable("packages", {
   image: text("image").notNull(),
   featured: boolean("featured").default(false),
   duration: text("duration").notNull(),
+  duration_days: integer("duration_days").notNull(),
+  location: text("location"),
+  rating: doublePrecision("rating"),
+  min_people: integer("min_people").default(1),
+  max_people: integer("max_people").default(4),
+  includes: text("includes").array(),
   inclusions: text("inclusions").array(),
   tags: text("tags").array(),
   createdAt: timestamp("created_at").defaultNow(),
@@ -90,7 +97,7 @@ export const restaurants = pgTable("restaurants", {
 // Booking schema
 export const bookings = pgTable("bookings", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: integer("user_id").notNull().references(() => users.id),
   bookingType: text("booking_type").notNull(),
   itemId: integer("item_id").notNull(),
   startDate: timestamp("start_date").notNull(),
@@ -104,12 +111,12 @@ export const bookings = pgTable("bookings", {
 // Testimonial schema
 export const testimonials = pgTable("testimonials", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: integer("user_id").notNull().references(() => users.id),
   content: text("content").notNull(),
   rating: doublePrecision("rating").notNull(),
-  experienceId: integer("experience_id"),
-  accommodationId: integer("accommodation_id"),
-  packageId: integer("package_id"),
+  experienceId: integer("experience_id").references(() => experiences.id),
+  accommodationId: integer("accommodation_id").references(() => accommodations.id),
+  packageId: integer("package_id").references(() => packages.id),
   approved: boolean("approved").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -154,6 +161,50 @@ export const insertTestimonialSchema = createInsertSchema(testimonials).omit({
   id: true,
   createdAt: true
 });
+
+// Define relationships
+export const usersRelations = relations(users, ({ many }) => ({
+  bookings: many(bookings),
+  testimonials: many(testimonials),
+}));
+
+export const experiencesRelations = relations(experiences, ({ many }) => ({
+  testimonials: many(testimonials),
+}));
+
+export const accommodationsRelations = relations(accommodations, ({ many }) => ({
+  testimonials: many(testimonials),
+}));
+
+export const packagesRelations = relations(packages, ({ many }) => ({
+  testimonials: many(testimonials),
+}));
+
+export const bookingsRelations = relations(bookings, ({ one }) => ({
+  user: one(users, {
+    fields: [bookings.userId],
+    references: [users.id],
+  }),
+}));
+
+export const testimonialsRelations = relations(testimonials, ({ one }) => ({
+  user: one(users, {
+    fields: [testimonials.userId],
+    references: [users.id],
+  }),
+  experience: one(experiences, {
+    fields: [testimonials.experienceId],
+    references: [experiences.id],
+  }),
+  accommodation: one(accommodations, {
+    fields: [testimonials.accommodationId],
+    references: [accommodations.id],
+  }),
+  package: one(packages, {
+    fields: [testimonials.packageId],
+    references: [packages.id],
+  }),
+}));
 
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
