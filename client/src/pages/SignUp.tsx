@@ -1,4 +1,4 @@
-import SignUpForm from "@/components/auth/SignUpForm";
+import ChatSignUpForm from "@/components/auth/ChatSignUpForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -54,7 +54,7 @@ export default function SignUp() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SignUpForm />
+            <ChatSignUpForm />
           </CardContent>
         </Card>
       </div>
