@@ -64,6 +64,14 @@ export interface IStorage {
   getTestimonialById(id: number): Promise<Testimonial | undefined>;
   createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
   approveTestimonial(id: number): Promise<Testimonial>;
+  
+  // Favorite/Wishlist operations
+  getUserFavorites(userId: number): Promise<Favorite[]>;
+  getFavoriteById(id: number): Promise<Favorite | undefined>;
+  addFavorite(favorite: InsertFavorite): Promise<Favorite>;
+  updateFavoriteNotes(id: number, notes: string): Promise<Favorite>;
+  deleteFavorite(id: number): Promise<void>;
+  checkIsFavorite(userId: number, itemType: string, itemId: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -74,6 +82,7 @@ export class MemStorage implements IStorage {
   private vehicles: Map<number, VehicleRental>;
   private restaurants: Map<number, Restaurant>;
   private testimonials: Map<number, Testimonial>;
+  private favorites: Map<number, Favorite>;
   private currentId: { [key: string]: number } = {};
 
   constructor() {
@@ -84,6 +93,7 @@ export class MemStorage implements IStorage {
     this.vehicles = new Map();
     this.restaurants = new Map();
     this.testimonials = new Map();
+    this.favorites = new Map();
     
     this.currentId = {
       users: 1,
@@ -92,7 +102,8 @@ export class MemStorage implements IStorage {
       packages: 1,
       vehicles: 1,
       restaurants: 1,
-      testimonials: 1
+      testimonials: 1,
+      favorites: 1
     };
     
     // Create admin user

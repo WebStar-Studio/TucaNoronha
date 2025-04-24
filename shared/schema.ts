@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, doublePrecision, jsonb, primaryKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -131,6 +131,16 @@ export const testimonials = pgTable("testimonials", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Favorites/Wishlist schema
+export const favorites = pgTable("favorites", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  itemType: text("item_type").notNull(), // 'experience', 'accommodation', 'package', 'restaurant', 'vehicle'
+  itemId: integer("item_id").notNull(),
+  notes: text("notes"), // Optional user notes about the saved item
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Insert schemas using drizzle-zod
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -172,10 +182,16 @@ export const insertTestimonialSchema = createInsertSchema(testimonials).omit({
   createdAt: true
 });
 
+export const insertFavoriteSchema = createInsertSchema(favorites).omit({
+  id: true,
+  createdAt: true
+});
+
 // Define relationships
 export const usersRelations = relations(users, ({ many }) => ({
   bookings: many(bookings),
   testimonials: many(testimonials),
+  favorites: many(favorites),
 }));
 
 export const experiencesRelations = relations(experiences, ({ many }) => ({
@@ -216,6 +232,13 @@ export const testimonialsRelations = relations(testimonials, ({ one }) => ({
   }),
 }));
 
+export const favoritesRelations = relations(favorites, ({ one }) => ({
+  user: one(users, {
+    fields: [favorites.userId],
+    references: [users.id],
+  }),
+}));
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -240,3 +263,6 @@ export type Booking = typeof bookings.$inferSelect;
 
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
 export type Testimonial = typeof testimonials.$inferSelect;
+
+export type InsertFavorite = z.infer<typeof insertFavoriteSchema>;
+export type Favorite = typeof favorites.$inferSelect;
