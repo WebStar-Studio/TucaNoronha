@@ -11,13 +11,32 @@ import {
   SupabaseUser
 } from '@/lib/supabase';
 
+// Define travel preferences interface
+export interface TravelPreferences {
+  travelDates?: { from: Date; to: Date };
+  groupSize?: number;
+  travelInterests?: string[];
+  accommodationPreference?: string;
+  dietaryRestrictions?: string[];
+  activityLevel?: string;
+  transportPreference?: string;
+  specialRequirements?: string;
+  previousVisit?: boolean;
+}
+
 type AuthState = {
   isAuthenticated: boolean;
   user: SupabaseUser | null;
   isLoading: boolean;
   error: string | null;
   initAuth: () => Promise<void>;
-  signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
+  signUp: (
+    email: string, 
+    password: string, 
+    firstName: string, 
+    lastName: string, 
+    travelPreferences?: TravelPreferences
+  ) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -54,10 +73,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   
-  signUp: async (email, password, firstName, lastName) => {
+  signUp: async (email, password, firstName, lastName, travelPreferences) => {
     set({ isLoading: true, error: null });
     try {
-      const { error } = await supabaseSignUp(email, password, firstName, lastName);
+      // Pass travel preferences as part of the user metadata
+      const { error } = await supabaseSignUp(email, password, firstName, lastName, travelPreferences);
       if (error) throw error;
       
       set({ isLoading: false });

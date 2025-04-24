@@ -12,6 +12,16 @@ export const users = pgTable("users", {
   lastName: text("last_name"),
   profilePicture: text("profile_picture"),
   role: text("role").default("user").notNull(),
+  // Travel-related information
+  travelDates: jsonb("travel_dates"), // Store arrival/departure as JSON
+  groupSize: integer("group_size"), // Number of travelers
+  travelInterests: text("travel_interests").array(), // Array of interests (nature, diving, etc.)
+  accommodationPreference: text("accommodation_preference"), // Luxury, mid-range, budget
+  dietaryRestrictions: text("dietary_restrictions").array(), // Food restrictions/preferences
+  activityLevel: text("activity_level"), // Adventure level: high, medium, low 
+  transportPreference: text("transport_preference"), // Car rental, guided tour, public transport
+  specialRequirements: text("special_requirements"), // Accessibility needs, etc.
+  previousVisit: boolean("previous_visit").default(false), // Has visited before?
   createdAt: timestamp("created_at").defaultNow(),
 });
 
