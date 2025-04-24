@@ -30,15 +30,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AUTH ROUTES
   app.post('/api/auth/register', async (req: RequestWithSession, res: Response) => {
     try {
+      // Extract basic user data
       const userData = {
         email: req.body.email,
         password: req.body.password,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         role: 'user', // Default role for new users
+        // Extract travel preferences if present
+        travelDates: req.body.travelDates,
+        groupSize: req.body.groupSize,
+        travelInterests: req.body.travelInterests,
+        accommodationPreference: req.body.accommodationPreference,
+        dietaryRestrictions: req.body.dietaryRestrictions,
+        activityLevel: req.body.activityLevel,
+        transportPreference: req.body.transportPreference,
+        specialRequirements: req.body.specialRequirements,
+        previousVisit: req.body.previousVisit
       };
       
       const user = await storage.createUser(userData);
+      
+      // Set the user's ID in the session to log them in
+      req.session.userId = user.id;
+      
       res.status(201).json({ 
         message: 'User registered successfully',
         user: { 
@@ -46,7 +61,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          role: user.role
+          role: user.role,
+          // Include travel preferences in response
+          travelDates: user.travelDates,
+          groupSize: user.groupSize,
+          travelInterests: user.travelInterests
         } 
       });
     } catch (error) {
