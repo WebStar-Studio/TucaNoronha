@@ -110,8 +110,8 @@ export default function Navbar() {
                     >
                       <Avatar className="h-9 w-9">
                         <AvatarImage
-                          src={user?.profilePicture || ""}
-                          alt={user?.firstName}
+                          src={user?.profilePicture || undefined}
+                          alt={user?.firstName || undefined}
                         />
                         <AvatarFallback className="bg-primary text-white">
                           {user?.firstName?.charAt(0) ||
@@ -242,8 +242,8 @@ export default function Navbar() {
                   <div className="flex-shrink-0">
                     <Avatar className="h-10 w-10">
                       <AvatarImage
-                        src={user?.profilePicture || ""}
-                        alt={user?.firstName}
+                        src={user?.profilePicture || undefined}
+                        alt={user?.firstName || undefined}
                       />
                       <AvatarFallback className="bg-primary text-white">
                         {user?.firstName?.charAt(0) ||
@@ -254,7 +254,7 @@ export default function Navbar() {
                   </div>
                   <div className="ml-3">
                     <div className="text-base font-medium text-foreground">
-                      {user?.first_name} {user?.last_name}
+                      {user?.firstName} {user?.lastName}
                     </div>
                     <div className="text-sm font-medium text-gray-500">
                       {user?.email}
