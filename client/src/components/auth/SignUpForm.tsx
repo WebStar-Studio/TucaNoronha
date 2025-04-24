@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, PartyPopper } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, PartyPopper, Users } from 'lucide-react';
 import { Link } from 'wouter';
 import TravelPreferences, { TravelPreferencesData } from './TravelPreferences';
 
@@ -134,137 +134,199 @@ export default function SignUpForm() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
-            className="space-y-4"
+            className="space-y-6"
           >
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-medium">Create Your Account</h2>
-              <p className="text-muted-foreground mt-1">First, let's set up your basic account details</p>
+            {/* Virtual assistant chat bubble - intro */}
+            <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
+              <div className="absolute -top-3 -left-3">
+                <div className="bg-primary text-white p-1.5 rounded-full shadow-md">
+                  <Users className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="pl-2 space-y-2">
+                <p className="text-foreground font-medium">Hello! I'm your Tuca Noronha travel assistant.</p>
+                <p className="text-muted-foreground text-sm">Let's create your account so I can personalize your paradise experience. What's your name?</p>
+              </div>
+              
+              {/* Animated typing indicator */}
+              <div className="mt-2 flex space-x-1 ml-2">
+                <motion.div 
+                  className="h-2 w-2 rounded-full bg-primary"
+                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+                <motion.div 
+                  className="h-2 w-2 rounded-full bg-primary"
+                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  transition={{ duration: 1.5, delay: 0.2, repeat: Infinity }}
+                />
+                <motion.div 
+                  className="h-2 w-2 rounded-full bg-primary"
+                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  transition={{ duration: 1.5, delay: 0.4, repeat: Infinity }}
+                />
+              </div>
             </div>
             
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmitAccount)} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form onSubmit={form.handleSubmit(onSubmitAccount)} className="space-y-5">
+                {/* User response area with futuristic styling */}
+                <div className="space-y-5 backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                          <FormLabel className="text-primary font-medium px-4 pt-2 block">First Name</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="John" 
+                              {...field}
+                              autoComplete="given-name"
+                              className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                            />
+                          </FormControl>
+                          <FormMessage className="px-4 pb-2" />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                          <FormLabel className="text-primary font-medium px-4 pt-2 block">Last Name</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Doe" 
+                              {...field}
+                              autoComplete="family-name"
+                              className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                            />
+                          </FormControl>
+                          <FormMessage className="px-4 pb-2" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+                
+                {/* Virtual assistant chat bubble - email */}
+                <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
+                  <div className="pl-2">
+                    <p className="text-muted-foreground">Great! Now, what email address would you like to use for your account?</p>
+                  </div>
+                </div>
+                
+                {/* User response - email */}
+                <div className="space-y-5 backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="email"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
+                      <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                        <FormLabel className="text-primary font-medium px-4 pt-2 block">Email</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="John" 
-                            {...field}
-                            autoComplete="given-name"
+                            placeholder="john@example.com" 
+                            {...field} 
+                            type="email"
+                            autoComplete="email"
+                            className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="px-4 pb-2" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                {/* Virtual assistant chat bubble - password */}
+                <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
+                  <div className="pl-2">
+                    <p className="text-muted-foreground">Perfect! Now choose a secure password to keep your paradise experience safe.</p>
+                  </div>
+                </div>
+                
+                {/* User response - password */}
+                <div className="space-y-5 backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                        <FormLabel className="text-primary font-medium px-4 pt-2 block">Password</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input 
+                              placeholder="••••••••" 
+                              {...field} 
+                              type={showPassword ? "text" : "password"}
+                              autoComplete="new-password"
+                              className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                            />
+                            <button 
+                              type="button"
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              onClick={toggleShowPassword}
+                              tabIndex={-1}
+                            >
+                              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage className="px-4 pb-2" />
                       </FormItem>
                     )}
                   />
                   
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="confirmPassword"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
+                      <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                        <FormLabel className="text-primary font-medium px-4 pt-2 block">Confirm Password</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="Doe" 
-                            {...field}
-                            autoComplete="family-name"
-                          />
+                          <div className="relative">
+                            <Input 
+                              placeholder="••••••••" 
+                              {...field} 
+                              type={showConfirmPassword ? "text" : "password"}
+                              autoComplete="new-password"
+                              className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                            />
+                            <button 
+                              type="button"
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              onClick={toggleShowConfirmPassword}
+                              tabIndex={-1}
+                            >
+                              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                          </div>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="px-4 pb-2" />
                       </FormItem>
                     )}
                   />
                 </div>
                 
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="john@example.com" 
-                          {...field} 
-                          type="email"
-                          autoComplete="email"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input 
-                            placeholder="••••••••" 
-                            {...field} 
-                            type={showPassword ? "text" : "password"}
-                            autoComplete="new-password"
-                          />
-                          <button 
-                            type="button"
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                            onClick={toggleShowPassword}
-                            tabIndex={-1}
-                          >
-                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input 
-                            placeholder="••••••••" 
-                            {...field} 
-                            type={showConfirmPassword ? "text" : "password"}
-                            autoComplete="new-password"
-                          />
-                          <button 
-                            type="button"
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                            onClick={toggleShowConfirmPassword}
-                            tabIndex={-1}
-                          >
-                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Virtual assistant final prompt */}
+                <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
+                  <div className="pl-2">
+                    <p className="text-muted-foreground">Wonderful! Now I'll ask about your travel preferences to create your perfect paradise experience.</p>
+                  </div>
+                </div>
                 
                 <Button 
                   type="submit" 
-                  className="w-full group btn-gradient mt-6 space-x-2"
+                  className="w-full group btn-gradient mt-6 space-x-2 py-6 rounded-xl text-lg font-medium shadow-md hover:shadow-lg transition-all duration-300"
                   disabled={isLoading || !form.formState.isValid}
                 >
                   <span>Continue to Travel Preferences</span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </form>
             </Form>
@@ -287,24 +349,37 @@ export default function SignUpForm() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
+            className="space-y-4"
           >
-            <div className="mb-6 flex items-center">
+            <div className="flex items-center space-x-4">
               <Button 
-                variant="ghost" 
+                variant="outline"
                 size="sm" 
                 onClick={() => setRegistrationStep('account')}
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 rounded-full h-10 w-10 p-0"
               >
                 <ArrowLeft className="h-4 w-4" />
-                <span>Back</span>
+                <span className="sr-only">Back</span>
               </Button>
-              <h2 className="text-xl font-medium ml-auto mr-auto">Customize Your Experience</h2>
+              
+              <div className="h-10 w-full bg-gradient-to-r from-primary/20 via-primary/10 to-transparent rounded-full flex items-center">
+                <motion.div 
+                  className="h-10 rounded-full bg-primary/20 flex items-center px-4 text-sm"
+                  initial={{ width: '33%' }}
+                  animate={{ width: '66%' }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <span className="whitespace-nowrap font-medium">Travel Preferences</span>
+                </motion.div>
+              </div>
             </div>
             
-            <TravelPreferences 
-              onComplete={handleTravelPreferencesComplete} 
-              isSubmitting={isLoading}
-            />
+            <div className="backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 border border-white/20 shadow-lg">
+              <TravelPreferences 
+                onComplete={handleTravelPreferencesComplete} 
+                isSubmitting={isLoading}
+              />
+            </div>
           </motion.div>
         )}
         
@@ -314,22 +389,97 @@ export default function SignUpForm() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="text-center py-12 space-y-4"
+            className="space-y-8 py-6"
           >
-            <div className="mx-auto bg-primary/10 rounded-full w-24 h-24 flex items-center justify-center mb-6">
-              <PartyPopper className="h-12 w-12 text-primary" />
-            </div>
-            <h2 className="text-2xl font-playfair">Welcome to Tuca Noronha!</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              Your personalized paradise adventure awaits. We're excited to help you discover the wonders of Fernando de Noronha.
-            </p>
-            <div className="mt-6">
-              <div className="animate-pulse w-24 mx-auto flex justify-center">
-                <Loader2 className="animate-spin text-primary" />
+            {/* Success completion message */}
+            <div className="p-6 backdrop-blur-sm rounded-2xl relative overflow-hidden 
+                  bg-gradient-to-br from-primary/20 to-transparent border border-primary/20 shadow-lg">
+              
+              {/* Animated particle effects */}
+              <div className="absolute inset-0 overflow-hidden">
+                {[...Array(15)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute rounded-full bg-white"
+                    style={{
+                      width: Math.random() * 6 + 2,
+                      height: Math.random() * 6 + 2,
+                      x: Math.random() * 100 + '%',
+                      y: Math.random() * 100 + '%',
+                    }}
+                    animate={{
+                      y: [null, -Math.random() * 400],
+                      opacity: [0, 1, 0],
+                    }}
+                    transition={{
+                      duration: Math.random() * 3 + 2,
+                      repeat: Infinity,
+                      repeatType: 'loop',
+                      delay: Math.random() * 2,
+                    }}
+                  />
+                ))}
               </div>
-              <p className="text-sm text-muted-foreground mt-2">
-                Redirecting you to your dashboard...
-              </p>
+              
+              <div className="relative z-10 text-center">
+                {/* Custom animation for the celebration icon */}
+                <motion.div
+                  className="mx-auto bg-primary/10 rounded-full w-24 h-24 flex items-center justify-center mb-6 border border-primary/20"
+                  initial={{ scale: 0.8, rotate: -10 }}
+                  animate={{ 
+                    scale: [0.8, 1.1, 1],
+                    rotate: [-10, 10, 0]
+                  }}
+                  transition={{ 
+                    duration: 0.8,
+                    times: [0, 0.5, 1],
+                    ease: "easeOut"
+                  }}
+                >
+                  <PartyPopper className="h-12 w-12 text-primary" />
+                </motion.div>
+                
+                <motion.h2 
+                  className="text-2xl font-playfair font-medium bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                >
+                  Welcome to Tuca Noronha!
+                </motion.h2>
+                
+                <motion.p 
+                  className="mt-4 max-w-md mx-auto text-foreground/80"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                >
+                  Your personalized paradise adventure awaits. Our AI-powered assistant is already preparing recommendations based on your preferences.
+                </motion.p>
+              </div>
+            </div>
+            
+            {/* Virtual assistant bubble */}
+            <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
+              <div className="absolute -top-3 -left-3">
+                <div className="bg-primary text-white p-1.5 rounded-full shadow-md">
+                  <Users className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="pl-2 space-y-2">
+                <p className="text-foreground font-medium">Your account has been created successfully!</p>
+                <p className="text-muted-foreground text-sm">I'm preparing your personalized dashboard with experiences tailored to your preferences. This will only take a moment...</p>
+              </div>
+              
+              {/* Animated progress bar */}
+              <div className="mt-4 h-2 w-full bg-primary/10 rounded-full overflow-hidden">
+                <motion.div 
+                  className="h-full bg-primary"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 2, ease: "easeInOut" }}
+                />
+              </div>
             </div>
           </motion.div>
         )}
