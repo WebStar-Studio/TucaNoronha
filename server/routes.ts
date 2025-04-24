@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -7,9 +7,26 @@ import {
   insertPackageSchema,
   insertVehicleRentalSchema,
   insertRestaurantSchema,
-  insertTestimonialSchema
+  insertTestimonialSchema,
+  insertFavoriteSchema
 } from "@shared/schema";
 import { z } from "zod";
+import { ParsedQs } from "qs";
+
+// Add types for Express session
+declare module "express-session" {
+  interface SessionData {
+    userId: number;
+  }
+}
+
+// Define custom request type with session
+interface RequestWithSession extends Request {
+  session: {
+    userId?: number;
+    destroy: (callback: (err: any) => void) => void;
+  };
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // AUTH ROUTES
@@ -617,6 +634,152 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error approving testimonial:', error);
       res.status(500).json({ message: 'Failed to approve testimonial' });
+    }
+  });
+
+  // FAVORITES ROUTES
+  // Auth middleware for protected routes
+  const requireAuth = (req: RequestWithSession, res: Response, next: NextFunction) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+    next();
+  };
+
+  // Get all favorites for the logged in user
+  app.get('/api/favorites', requireAuth, async (req: RequestWithSession, res: Response) => {
+    try {
+      const favorites = await storage.getUserFavorites(req.session.userId);
+      res.json(favorites);
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+      res.status(500).json({ message: 'Failed to fetch favorites' });
+    }
+  });
+
+  // Add a new item to favorites
+  app.post('/api/favorites', requireAuth, async (req: RequestWithSession, res: Response) => {
+    try {
+      const result = insertFavoriteSchema.safeParse({
+        ...req.body,
+        userId: req.session.userId
+      });
+      
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid favorite data', errors: result.error.format() });
+      }
+
+      // Check if item is already in favorites
+      const isFavorite = await storage.checkIsFavorite(
+        req.session.userId,
+        result.data.itemType,
+        result.data.itemId
+      );
+
+      if (isFavorite) {
+        return res.status(400).json({ message: 'Item is already in favorites' });
+      }
+      
+      const favorite = await storage.addFavorite(result.data);
+      res.status(201).json(favorite);
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+      res.status(500).json({ message: 'Failed to add favorite' });
+    }
+  });
+
+  // Check if an item is in the user's favorites
+  app.get('/api/favorites/check', requireAuth, async (req: RequestWithSession, res: Response) => {
+    try {
+      const { itemType, itemId } = req.query;
+      
+      if (!itemType || !itemId) {
+        return res.status(400).json({ message: 'Missing itemType or itemId query parameters' });
+      }
+      
+      const isFavorite = await storage.checkIsFavorite(
+        req.session.userId,
+        itemType as string,
+        parseInt(itemId as string)
+      );
+      
+      res.json({ isFavorite });
+    } catch (error) {
+      console.error('Error checking favorite status:', error);
+      res.status(500).json({ message: 'Failed to check favorite status' });
+    }
+  });
+
+  // Get a specific favorite by ID
+  app.get('/api/favorites/:id', requireAuth, async (req: RequestWithSession, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const favorite = await storage.getFavoriteById(id);
+      
+      if (!favorite) {
+        return res.status(404).json({ message: 'Favorite not found' });
+      }
+      
+      // Check if favorite belongs to the logged in user
+      if (favorite.userId !== req.session.userId) {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+      
+      res.json(favorite);
+    } catch (error) {
+      console.error('Error fetching favorite:', error);
+      res.status(500).json({ message: 'Failed to fetch favorite' });
+    }
+  });
+
+  // Update favorite notes
+  app.patch('/api/favorites/:id', requireAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const favorite = await storage.getFavoriteById(id);
+      
+      if (!favorite) {
+        return res.status(404).json({ message: 'Favorite not found' });
+      }
+      
+      // Check if favorite belongs to the logged in user
+      if (favorite.userId !== req.session.userId) {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+      
+      const { notes } = req.body;
+      if (notes === undefined) {
+        return res.status(400).json({ message: 'Notes field is required' });
+      }
+      
+      const updatedFavorite = await storage.updateFavoriteNotes(id, notes);
+      res.json(updatedFavorite);
+    } catch (error) {
+      console.error('Error updating favorite:', error);
+      res.status(500).json({ message: 'Failed to update favorite' });
+    }
+  });
+
+  // Remove item from favorites
+  app.delete('/api/favorites/:id', requireAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const favorite = await storage.getFavoriteById(id);
+      
+      if (!favorite) {
+        return res.status(404).json({ message: 'Favorite not found' });
+      }
+      
+      // Check if favorite belongs to the logged in user
+      if (favorite.userId !== req.session.userId) {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+      
+      await storage.deleteFavorite(id);
+      res.json({ message: 'Favorite removed successfully' });
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+      res.status(500).json({ message: 'Failed to remove favorite' });
     }
   });
 
