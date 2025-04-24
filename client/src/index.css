@@ -107,7 +107,7 @@
   }
   
   .hero-gradient {
-    @apply bg-gradient-to-b from-transparent to-foreground/80;
+    @apply bg-gradient-to-b from-foreground/50 to-foreground/80;
   }
 
   .animate-fade-in {
