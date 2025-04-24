@@ -12,25 +12,23 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { ParsedQs } from "qs";
+import session from "express-session";
 
 // Add types for Express session
 declare module "express-session" {
   interface SessionData {
-    userId: number;
+    userId?: number;
   }
 }
 
 // Define custom request type with session
 interface RequestWithSession extends Request {
-  session: {
-    userId?: number;
-    destroy: (callback: (err: any) => void) => void;
-  };
+  session: session.Session & session.SessionData;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // AUTH ROUTES
-  app.post('/api/auth/register', async (req, res) => {
+  app.post('/api/auth/register', async (req: RequestWithSession, res: Response) => {
     try {
       const userData = {
         email: req.body.email,
@@ -649,7 +647,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all favorites for the logged in user
   app.get('/api/favorites', requireAuth, async (req: RequestWithSession, res: Response) => {
     try {
-      const favorites = await storage.getUserFavorites(req.session.userId);
+      // We can safely use userId here because requireAuth middleware ensures it exists
+      const userId = req.session.userId as number;
+      const favorites = await storage.getUserFavorites(userId);
       res.json(favorites);
     } catch (error) {
       console.error('Error fetching favorites:', error);
@@ -660,9 +660,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Add a new item to favorites
   app.post('/api/favorites', requireAuth, async (req: RequestWithSession, res: Response) => {
     try {
+      const userId = req.session.userId as number;
+      
       const result = insertFavoriteSchema.safeParse({
         ...req.body,
-        userId: req.session.userId
+        userId
       });
       
       if (!result.success) {
@@ -671,7 +673,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if item is already in favorites
       const isFavorite = await storage.checkIsFavorite(
-        req.session.userId,
+        userId,
         result.data.itemType,
         result.data.itemId
       );
@@ -692,13 +694,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/favorites/check', requireAuth, async (req: RequestWithSession, res: Response) => {
     try {
       const { itemType, itemId } = req.query;
+      const userId = req.session.userId as number;
       
       if (!itemType || !itemId) {
         return res.status(400).json({ message: 'Missing itemType or itemId query parameters' });
       }
       
       const isFavorite = await storage.checkIsFavorite(
-        req.session.userId,
+        userId,
         itemType as string,
         parseInt(itemId as string)
       );
@@ -715,13 +718,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const favorite = await storage.getFavoriteById(id);
+      const userId = req.session.userId as number;
       
       if (!favorite) {
         return res.status(404).json({ message: 'Favorite not found' });
       }
       
       // Check if favorite belongs to the logged in user
-      if (favorite.userId !== req.session.userId) {
+      if (favorite.userId !== userId) {
         return res.status(403).json({ message: 'Access denied' });
       }
       
@@ -737,13 +741,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const favorite = await storage.getFavoriteById(id);
+      const userId = req.session.userId as number;
       
       if (!favorite) {
         return res.status(404).json({ message: 'Favorite not found' });
       }
       
       // Check if favorite belongs to the logged in user
-      if (favorite.userId !== req.session.userId) {
+      if (favorite.userId !== userId) {
         return res.status(403).json({ message: 'Access denied' });
       }
       
@@ -765,13 +770,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const favorite = await storage.getFavoriteById(id);
+      const userId = req.session.userId as number;
       
       if (!favorite) {
         return res.status(404).json({ message: 'Favorite not found' });
       }
       
       // Check if favorite belongs to the logged in user
-      if (favorite.userId !== req.session.userId) {
+      if (favorite.userId !== userId) {
         return res.status(403).json({ message: 'Access denied' });
       }
       
