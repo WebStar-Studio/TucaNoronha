@@ -1,15 +1,6 @@
 import { create } from 'zustand';
-import { 
-  signUp as supabaseSignUp, 
-  signIn as supabaseSignIn, 
-  signOut as supabaseSignOut,
-  resetPassword as supabaseResetPassword,
-  updatePassword as supabaseUpdatePassword,
-  getCurrentUser,
-  updateProfile as supabaseUpdateProfile,
-  uploadProfilePicture as supabaseUploadProfilePicture,
-  SupabaseUser
-} from '@/lib/supabase';
+import { User } from '@shared/schema';
+import { apiRequest } from '@/lib/queryClient';
 
 // Define travel preferences interface
 export interface TravelPreferences {
@@ -26,7 +17,7 @@ export interface TravelPreferences {
 
 type AuthState = {
   isAuthenticated: boolean;
-  user: SupabaseUser | null;
+  user: User | null;
   isLoading: boolean;
   error: string | null;
   initAuth: () => Promise<void>;
@@ -41,7 +32,7 @@ type AuthState = {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
-  updateProfile: (userData: Partial<SupabaseUser>) => Promise<void>;
+  updateProfile: (userData: Partial<User>) => Promise<void>;
   uploadProfilePicture: (file: File) => Promise<string | null>;
   clearError: () => void;
 };
@@ -55,12 +46,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initAuth: async () => {
     set({ isLoading: true });
     try {
-      const { user, error } = await getCurrentUser();
-      if (error) throw error;
+      const response = await apiRequest('GET', '/api/auth/me');
+      
+      if (!response.ok) {
+        set({ 
+          isAuthenticated: false, 
+          user: null,
+          isLoading: false
+        });
+        return;
+      }
+      
+      const data = await response.json();
       
       set({ 
-        isAuthenticated: !!user, 
-        user,
+        isAuthenticated: !!data.user, 
+        user: data.user,
         isLoading: false
       });
     } catch (error) {
@@ -76,11 +77,29 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signUp: async (email, password, firstName, lastName, travelPreferences) => {
     set({ isLoading: true, error: null });
     try {
-      // Pass travel preferences as part of the user metadata
-      const { error } = await supabaseSignUp(email, password, firstName, lastName, travelPreferences);
-      if (error) throw error;
+      // Prepare user data
+      const userData = {
+        email,
+        password,
+        firstName,
+        lastName,
+        ...travelPreferences
+      };
       
-      set({ isLoading: false });
+      const response = await apiRequest('POST', '/api/auth/register', userData);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+      
+      const data = await response.json();
+      
+      set({ 
+        isLoading: false,
+        user: data.user,
+        isAuthenticated: true
+      });
     } catch (error) {
       set({ 
         isLoading: false,
@@ -93,14 +112,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signIn: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const { data, error } = await supabaseSignIn(email, password);
-      if (error) throw error;
+      const response = await apiRequest('POST', '/api/auth/login', { email, password });
       
-      const { user } = await getCurrentUser();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+      
+      const data = await response.json();
       
       set({ 
         isAuthenticated: true,
-        user,
+        user: data.user,
         isLoading: false
       });
     } catch (error) {
@@ -116,8 +139,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signOut: async () => {
     set({ isLoading: true, error: null });
     try {
-      const { error } = await supabaseSignOut();
-      if (error) throw error;
+      const response = await apiRequest('POST', '/api/auth/logout');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Logout failed');
+      }
       
       set({ 
         isAuthenticated: false, 
@@ -135,8 +162,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   resetPassword: async (email) => {
     set({ isLoading: true, error: null });
     try {
-      const { error } = await supabaseResetPassword(email);
-      if (error) throw error;
+      const response = await apiRequest('POST', '/api/auth/reset-password', { email });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Password reset failed');
+      }
       
       set({ isLoading: false });
     } catch (error) {
@@ -151,8 +182,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   updatePassword: async (newPassword) => {
     set({ isLoading: true, error: null });
     try {
-      const { error } = await supabaseUpdatePassword(newPassword);
-      if (error) throw error;
+      const response = await apiRequest('POST', '/api/auth/update-password', { newPassword });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Password update failed');
+      }
       
       set({ isLoading: false });
     } catch (error) {
@@ -170,11 +205,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { user } = get();
       if (!user) throw new Error('User not authenticated');
       
-      const { error } = await supabaseUpdateProfile(user.id, userData);
-      if (error) throw error;
+      const response = await apiRequest('PATCH', '/api/auth/profile', userData);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Profile update failed');
+      }
+      
+      const data = await response.json();
       
       set({ 
-        user: { ...user, ...userData },
+        user: data.user,
         isLoading: false 
       });
     } catch (error) {
@@ -192,18 +233,29 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { user } = get();
       if (!user) throw new Error('User not authenticated');
       
-      const { url, error } = await supabaseUploadProfilePicture(user.id, file);
-      if (error) throw error;
+      const formData = new FormData();
+      formData.append('profilePicture', file);
       
-      // Update local user state with new profile picture
-      if (url) {
-        set({ 
-          user: { ...user, profile_picture: url },
-          isLoading: false 
-        });
+      const response = await fetch('/api/auth/profile-picture', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to upload profile picture');
       }
       
-      return url;
+      const data = await response.json();
+      
+      // Update local user state with new profile picture
+      set({ 
+        user: { ...user, profilePicture: data.url },
+        isLoading: false 
+      });
+      
+      return data.url;
     } catch (error) {
       set({ 
         isLoading: false,
