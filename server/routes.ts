@@ -1,0 +1,626 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { 
+  insertExperienceSchema, 
+  insertAccommodationSchema, 
+  insertPackageSchema,
+  insertVehicleRentalSchema,
+  insertRestaurantSchema,
+  insertTestimonialSchema
+} from "@shared/schema";
+import { z } from "zod";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // AUTH ROUTES
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const userData = {
+        email: req.body.email,
+        password: req.body.password,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        role: 'user', // Default role for new users
+      };
+      
+      const user = await storage.createUser(userData);
+      res.status(201).json({ 
+        message: 'User registered successfully',
+        user: { 
+          id: user.id, 
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role
+        } 
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(400).json({ message: 'Registration failed' });
+    }
+  });
+
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      const user = await storage.getUserByEmail(email);
+      if (!user || user.password !== password) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+      
+      // Set user in session
+      req.session.userId = user.id;
+      
+      res.json({ 
+        message: 'Login successful',
+        user: { 
+          id: user.id, 
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role
+        } 
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ message: 'Login failed' });
+    }
+  });
+
+  app.post('/api/auth/logout', (req, res) => {
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).json({ message: 'Logout failed' });
+      }
+      res.json({ message: 'Logout successful' });
+    });
+  });
+
+  app.get('/api/auth/me', async (req, res) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+    
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      res.json({ 
+        user: { 
+          id: user.id, 
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          profilePicture: user.profilePicture
+        } 
+      });
+    } catch (error) {
+      console.error('Auth check error:', error);
+      res.status(500).json({ message: 'Authentication check failed' });
+    }
+  });
+
+  // EXPERIENCES ROUTES
+  app.get('/api/experiences', async (req, res) => {
+    try {
+      const experiences = await storage.getAllExperiences();
+      res.json(experiences);
+    } catch (error) {
+      console.error('Error fetching experiences:', error);
+      res.status(500).json({ message: 'Failed to fetch experiences' });
+    }
+  });
+
+  app.get('/api/experiences/featured', async (req, res) => {
+    try {
+      const experiences = await storage.getFeaturedExperiences();
+      res.json(experiences);
+    } catch (error) {
+      console.error('Error fetching featured experiences:', error);
+      res.status(500).json({ message: 'Failed to fetch featured experiences' });
+    }
+  });
+
+  app.get('/api/experiences/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const experience = await storage.getExperienceById(id);
+      
+      if (!experience) {
+        return res.status(404).json({ message: 'Experience not found' });
+      }
+      
+      res.json(experience);
+    } catch (error) {
+      console.error('Error fetching experience:', error);
+      res.status(500).json({ message: 'Failed to fetch experience' });
+    }
+  });
+
+  app.post('/api/experiences', async (req, res) => {
+    try {
+      const result = insertExperienceSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid experience data', errors: result.error.format() });
+      }
+      
+      const experience = await storage.createExperience(result.data);
+      res.status(201).json(experience);
+    } catch (error) {
+      console.error('Error creating experience:', error);
+      res.status(500).json({ message: 'Failed to create experience' });
+    }
+  });
+
+  app.patch('/api/experiences/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingExperience = await storage.getExperienceById(id);
+      
+      if (!existingExperience) {
+        return res.status(404).json({ message: 'Experience not found' });
+      }
+      
+      const result = insertExperienceSchema.partial().safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid experience data', errors: result.error.format() });
+      }
+      
+      const updatedExperience = await storage.updateExperience(id, result.data);
+      res.json(updatedExperience);
+    } catch (error) {
+      console.error('Error updating experience:', error);
+      res.status(500).json({ message: 'Failed to update experience' });
+    }
+  });
+
+  app.delete('/api/experiences/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingExperience = await storage.getExperienceById(id);
+      
+      if (!existingExperience) {
+        return res.status(404).json({ message: 'Experience not found' });
+      }
+      
+      await storage.deleteExperience(id);
+      res.json({ message: 'Experience deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting experience:', error);
+      res.status(500).json({ message: 'Failed to delete experience' });
+    }
+  });
+
+  // ACCOMMODATIONS ROUTES
+  app.get('/api/accommodations', async (req, res) => {
+    try {
+      const accommodations = await storage.getAllAccommodations();
+      res.json(accommodations);
+    } catch (error) {
+      console.error('Error fetching accommodations:', error);
+      res.status(500).json({ message: 'Failed to fetch accommodations' });
+    }
+  });
+
+  app.get('/api/accommodations/featured', async (req, res) => {
+    try {
+      const accommodations = await storage.getFeaturedAccommodations();
+      res.json(accommodations);
+    } catch (error) {
+      console.error('Error fetching featured accommodations:', error);
+      res.status(500).json({ message: 'Failed to fetch featured accommodations' });
+    }
+  });
+
+  app.get('/api/accommodations/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const accommodation = await storage.getAccommodationById(id);
+      
+      if (!accommodation) {
+        return res.status(404).json({ message: 'Accommodation not found' });
+      }
+      
+      res.json(accommodation);
+    } catch (error) {
+      console.error('Error fetching accommodation:', error);
+      res.status(500).json({ message: 'Failed to fetch accommodation' });
+    }
+  });
+
+  app.post('/api/accommodations', async (req, res) => {
+    try {
+      const result = insertAccommodationSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid accommodation data', errors: result.error.format() });
+      }
+      
+      const accommodation = await storage.createAccommodation(result.data);
+      res.status(201).json(accommodation);
+    } catch (error) {
+      console.error('Error creating accommodation:', error);
+      res.status(500).json({ message: 'Failed to create accommodation' });
+    }
+  });
+
+  app.patch('/api/accommodations/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingAccommodation = await storage.getAccommodationById(id);
+      
+      if (!existingAccommodation) {
+        return res.status(404).json({ message: 'Accommodation not found' });
+      }
+      
+      const result = insertAccommodationSchema.partial().safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid accommodation data', errors: result.error.format() });
+      }
+      
+      const updatedAccommodation = await storage.updateAccommodation(id, result.data);
+      res.json(updatedAccommodation);
+    } catch (error) {
+      console.error('Error updating accommodation:', error);
+      res.status(500).json({ message: 'Failed to update accommodation' });
+    }
+  });
+
+  app.delete('/api/accommodations/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingAccommodation = await storage.getAccommodationById(id);
+      
+      if (!existingAccommodation) {
+        return res.status(404).json({ message: 'Accommodation not found' });
+      }
+      
+      await storage.deleteAccommodation(id);
+      res.json({ message: 'Accommodation deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting accommodation:', error);
+      res.status(500).json({ message: 'Failed to delete accommodation' });
+    }
+  });
+
+  // PACKAGES ROUTES
+  app.get('/api/packages', async (req, res) => {
+    try {
+      const packages = await storage.getAllPackages();
+      res.json(packages);
+    } catch (error) {
+      console.error('Error fetching packages:', error);
+      res.status(500).json({ message: 'Failed to fetch packages' });
+    }
+  });
+
+  app.get('/api/packages/featured', async (req, res) => {
+    try {
+      const packages = await storage.getFeaturedPackages();
+      res.json(packages);
+    } catch (error) {
+      console.error('Error fetching featured packages:', error);
+      res.status(500).json({ message: 'Failed to fetch featured packages' });
+    }
+  });
+
+  app.get('/api/packages/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const pkg = await storage.getPackageById(id);
+      
+      if (!pkg) {
+        return res.status(404).json({ message: 'Package not found' });
+      }
+      
+      res.json(pkg);
+    } catch (error) {
+      console.error('Error fetching package:', error);
+      res.status(500).json({ message: 'Failed to fetch package' });
+    }
+  });
+
+  app.post('/api/packages', async (req, res) => {
+    try {
+      const result = insertPackageSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid package data', errors: result.error.format() });
+      }
+      
+      const pkg = await storage.createPackage(result.data);
+      res.status(201).json(pkg);
+    } catch (error) {
+      console.error('Error creating package:', error);
+      res.status(500).json({ message: 'Failed to create package' });
+    }
+  });
+
+  app.patch('/api/packages/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingPackage = await storage.getPackageById(id);
+      
+      if (!existingPackage) {
+        return res.status(404).json({ message: 'Package not found' });
+      }
+      
+      const result = insertPackageSchema.partial().safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid package data', errors: result.error.format() });
+      }
+      
+      const updatedPackage = await storage.updatePackage(id, result.data);
+      res.json(updatedPackage);
+    } catch (error) {
+      console.error('Error updating package:', error);
+      res.status(500).json({ message: 'Failed to update package' });
+    }
+  });
+
+  app.delete('/api/packages/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingPackage = await storage.getPackageById(id);
+      
+      if (!existingPackage) {
+        return res.status(404).json({ message: 'Package not found' });
+      }
+      
+      await storage.deletePackage(id);
+      res.json({ message: 'Package deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting package:', error);
+      res.status(500).json({ message: 'Failed to delete package' });
+    }
+  });
+
+  // VEHICLES ROUTES
+  app.get('/api/vehicles', async (req, res) => {
+    try {
+      const vehicles = await storage.getAllVehicles();
+      res.json(vehicles);
+    } catch (error) {
+      console.error('Error fetching vehicles:', error);
+      res.status(500).json({ message: 'Failed to fetch vehicles' });
+    }
+  });
+
+  app.get('/api/vehicles/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const vehicle = await storage.getVehicleById(id);
+      
+      if (!vehicle) {
+        return res.status(404).json({ message: 'Vehicle not found' });
+      }
+      
+      res.json(vehicle);
+    } catch (error) {
+      console.error('Error fetching vehicle:', error);
+      res.status(500).json({ message: 'Failed to fetch vehicle' });
+    }
+  });
+
+  app.post('/api/vehicles', async (req, res) => {
+    try {
+      const result = insertVehicleRentalSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid vehicle data', errors: result.error.format() });
+      }
+      
+      const vehicle = await storage.createVehicle(result.data);
+      res.status(201).json(vehicle);
+    } catch (error) {
+      console.error('Error creating vehicle:', error);
+      res.status(500).json({ message: 'Failed to create vehicle' });
+    }
+  });
+
+  app.patch('/api/vehicles/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingVehicle = await storage.getVehicleById(id);
+      
+      if (!existingVehicle) {
+        return res.status(404).json({ message: 'Vehicle not found' });
+      }
+      
+      const result = insertVehicleRentalSchema.partial().safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid vehicle data', errors: result.error.format() });
+      }
+      
+      const updatedVehicle = await storage.updateVehicle(id, result.data);
+      res.json(updatedVehicle);
+    } catch (error) {
+      console.error('Error updating vehicle:', error);
+      res.status(500).json({ message: 'Failed to update vehicle' });
+    }
+  });
+
+  app.delete('/api/vehicles/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingVehicle = await storage.getVehicleById(id);
+      
+      if (!existingVehicle) {
+        return res.status(404).json({ message: 'Vehicle not found' });
+      }
+      
+      await storage.deleteVehicle(id);
+      res.json({ message: 'Vehicle deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting vehicle:', error);
+      res.status(500).json({ message: 'Failed to delete vehicle' });
+    }
+  });
+
+  // RESTAURANTS ROUTES
+  app.get('/api/restaurants', async (req, res) => {
+    try {
+      const restaurants = await storage.getAllRestaurants();
+      res.json(restaurants);
+    } catch (error) {
+      console.error('Error fetching restaurants:', error);
+      res.status(500).json({ message: 'Failed to fetch restaurants' });
+    }
+  });
+
+  app.get('/api/restaurants/featured', async (req, res) => {
+    try {
+      const restaurants = await storage.getFeaturedRestaurants();
+      res.json(restaurants);
+    } catch (error) {
+      console.error('Error fetching featured restaurants:', error);
+      res.status(500).json({ message: 'Failed to fetch featured restaurants' });
+    }
+  });
+
+  app.get('/api/restaurants/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const restaurant = await storage.getRestaurantById(id);
+      
+      if (!restaurant) {
+        return res.status(404).json({ message: 'Restaurant not found' });
+      }
+      
+      res.json(restaurant);
+    } catch (error) {
+      console.error('Error fetching restaurant:', error);
+      res.status(500).json({ message: 'Failed to fetch restaurant' });
+    }
+  });
+
+  app.post('/api/restaurants', async (req, res) => {
+    try {
+      const result = insertRestaurantSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid restaurant data', errors: result.error.format() });
+      }
+      
+      const restaurant = await storage.createRestaurant(result.data);
+      res.status(201).json(restaurant);
+    } catch (error) {
+      console.error('Error creating restaurant:', error);
+      res.status(500).json({ message: 'Failed to create restaurant' });
+    }
+  });
+
+  app.patch('/api/restaurants/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingRestaurant = await storage.getRestaurantById(id);
+      
+      if (!existingRestaurant) {
+        return res.status(404).json({ message: 'Restaurant not found' });
+      }
+      
+      const result = insertRestaurantSchema.partial().safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid restaurant data', errors: result.error.format() });
+      }
+      
+      const updatedRestaurant = await storage.updateRestaurant(id, result.data);
+      res.json(updatedRestaurant);
+    } catch (error) {
+      console.error('Error updating restaurant:', error);
+      res.status(500).json({ message: 'Failed to update restaurant' });
+    }
+  });
+
+  app.delete('/api/restaurants/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingRestaurant = await storage.getRestaurantById(id);
+      
+      if (!existingRestaurant) {
+        return res.status(404).json({ message: 'Restaurant not found' });
+      }
+      
+      await storage.deleteRestaurant(id);
+      res.json({ message: 'Restaurant deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting restaurant:', error);
+      res.status(500).json({ message: 'Failed to delete restaurant' });
+    }
+  });
+
+  // TESTIMONIALS ROUTES
+  app.get('/api/testimonials', async (req, res) => {
+    try {
+      const testimonials = await storage.getAllTestimonials();
+      res.json(testimonials);
+    } catch (error) {
+      console.error('Error fetching testimonials:', error);
+      res.status(500).json({ message: 'Failed to fetch testimonials' });
+    }
+  });
+
+  app.get('/api/testimonials/approved', async (req, res) => {
+    try {
+      const testimonials = await storage.getApprovedTestimonials();
+      res.json(testimonials);
+    } catch (error) {
+      console.error('Error fetching approved testimonials:', error);
+      res.status(500).json({ message: 'Failed to fetch approved testimonials' });
+    }
+  });
+
+  app.post('/api/testimonials', async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: 'Authentication required' });
+      }
+      
+      const result = insertTestimonialSchema.safeParse({
+        ...req.body,
+        userId: req.session.userId
+      });
+      
+      if (!result.success) {
+        return res.status(400).json({ message: 'Invalid testimonial data', errors: result.error.format() });
+      }
+      
+      const testimonial = await storage.createTestimonial(result.data);
+      res.status(201).json(testimonial);
+    } catch (error) {
+      console.error('Error creating testimonial:', error);
+      res.status(500).json({ message: 'Failed to create testimonial' });
+    }
+  });
+
+  app.patch('/api/testimonials/:id/approve', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const existingTestimonial = await storage.getTestimonialById(id);
+      
+      if (!existingTestimonial) {
+        return res.status(404).json({ message: 'Testimonial not found' });
+      }
+      
+      // Only admins can approve testimonials
+      if (!req.session.userId) {
+        return res.status(401).json({ message: 'Authentication required' });
+      }
+      
+      const user = await storage.getUser(req.session.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Admin access required' });
+      }
+      
+      const updatedTestimonial = await storage.approveTestimonial(id);
+      res.json(updatedTestimonial);
+    } catch (error) {
+      console.error('Error approving testimonial:', error);
+      res.status(500).json({ message: 'Failed to approve testimonial' });
+    }
+  });
+
+  const httpServer = createServer(app);
+
+  return httpServer;
+}

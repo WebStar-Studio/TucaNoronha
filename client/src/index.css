@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 210 20% 98%;
+  --foreground: 222 47% 11%;
+  --muted: 210 20% 96%;
+  --muted-foreground: 215 16% 47%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 158 94% 33%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 35 92% 52%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 222 47% 11%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+  --muted: 217 32% 17%;
+  --muted-foreground: 215 20% 65%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+  --card: 222 47% 11%;
+  --card-foreground: 210 40% 98%;
+  --border: 217 32% 17%;
+  --input: 217 32% 17%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 158 94% 33%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 35 92% 52%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 215 20% 65%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-inter;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-montserrat;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md;
+  }
+  
+  .minimal-card {
+    @apply bg-white shadow-sm transition-all duration-300;
+  }
+  
+  .bordered-card {
+    @apply bg-white shadow-md border border-gray-100 transition-all duration-300;
+  }
+  
+  .elevated-card {
+    @apply bg-white shadow-lg transition-all duration-300;
+  }
+  
+  .minimal-card:hover, .bordered-card:hover, .elevated-card:hover {
+    @apply transform -translate-y-1 shadow-xl;
+  }
+  
+  .btn-gradient {
+    @apply bg-gradient-to-r from-primary to-primary/90 text-white font-medium transition-all duration-300;
+  }
+  
+  .btn-gradient:hover {
+    @apply shadow-md -translate-y-0.5;
+  }
+  
+  .accent-gradient {
+    @apply bg-gradient-to-r from-accent to-accent/90 text-white font-medium transition-all duration-300;
+  }
+  
+  .accent-gradient:hover {
+    @apply shadow-md -translate-y-0.5;
+  }
+  
+  .secondary-gradient {
+    @apply bg-gradient-to-r from-secondary to-secondary/90 text-white font-medium transition-all duration-300;
+  }
+  
+  .secondary-gradient:hover {
+    @apply shadow-md -translate-y-0.5;
+  }
+  
+  .hero-gradient {
+    @apply bg-gradient-to-b from-transparent to-foreground/80;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+}
