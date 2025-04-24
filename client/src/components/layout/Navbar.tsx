@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'wouter';
-import { useAuthStore } from '@/store/authStore';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
+import { useAuthStore } from "@/store/authStore";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,8 +9,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { 
+} from "@/components/ui/dropdown-menu";
+import {
   Menu,
   X,
   User,
@@ -19,9 +19,9 @@ import {
   Map,
   Bed,
   Package,
-  Settings
-} from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+  Settings,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,36 +41,58 @@ export default function Navbar() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleSignOut = async () => {
     await signOut();
-    setLocation('/');
+    setLocation("/");
     closeMenu();
   };
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
+    <nav
+      className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : "bg-transparent"}`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <span className={`font-montserrat font-bold text-2xl ${scrolled ? 'text-primary' : 'text-white'}`}>tuca</span>
-              <span className={`font-montserrat font-bold text-2xl ${scrolled ? 'text-foreground' : 'text-white'}`}>noronha</span>
+              <span
+                className={`font-montserrat font-bold text-2xl ${scrolled ? "text-primary" : "text-white"}`}
+              >
+                tuca
+              </span>
+              <span
+                className={`font-montserrat font-bold text-2xl ${scrolled ? "text-foreground" : "text-white"}`}
+              >
+                noronha
+              </span>
             </Link>
             <div className="hidden lg:ml-10 lg:flex lg:space-x-8">
-              <Link href="/" className={`px-3 py-2 text-sm font-medium ${scrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white'} transition-colors`}>
+              <Link
+                href="/"
+                className={`px-3 py-2 text-sm font-medium ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-white"} transition-colors`}
+              >
                 Home
               </Link>
-              <Link href="/experiences" className={`px-3 py-2 text-sm font-medium ${scrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white'} transition-colors`}>
+              <Link
+                href="/experiences"
+                className={`px-3 py-2 text-sm font-medium ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-white"} transition-colors`}
+              >
                 Experiences
               </Link>
-              <Link href="/accommodations" className={`px-3 py-2 text-sm font-medium ${scrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white'} transition-colors`}>
+              <Link
+                href="/accommodations"
+                className={`px-3 py-2 text-sm font-medium ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-white"} transition-colors`}
+              >
                 Accommodations
               </Link>
-              <Link href="/packages" className={`px-3 py-2 text-sm font-medium ${scrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white'} transition-colors`}>
+              <Link
+                href="/packages"
+                className={`px-3 py-2 text-sm font-medium ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-white"} transition-colors`}
+              >
                 Packages
               </Link>
             </div>
@@ -80,11 +102,19 @@ export default function Navbar() {
               <div className="flex items-center space-x-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full"
+                    >
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src={user?.profile_picture || ''} alt={user?.first_name} />
+                        <AvatarImage
+                          src={user?.profile_picture || ""}
+                          alt={user?.first_name}
+                        />
                         <AvatarFallback className="bg-primary text-white">
-                          {user?.first_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                          {user?.first_name?.charAt(0) ||
+                            user?.email?.charAt(0) ||
+                            "U"}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
@@ -92,17 +122,21 @@ export default function Navbar() {
                   <DropdownMenuContent className="w-56" align="end" forceMount>
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{user?.first_name} {user?.last_name}</p>
-                        <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                        <p className="text-sm font-medium leading-none">
+                          {user?.first_name} {user?.last_name}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user?.email}
+                        </p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => setLocation('/profile')}>
+                    <DropdownMenuItem onClick={() => setLocation("/profile")}>
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </DropdownMenuItem>
-                    {user?.role === 'admin' && (
-                      <DropdownMenuItem onClick={() => setLocation('/admin')}>
+                    {user?.role === "admin" && (
+                      <DropdownMenuItem onClick={() => setLocation("/admin")}>
                         <Settings className="mr-2 h-4 w-4" />
                         <span>Admin Dashboard</span>
                       </DropdownMenuItem>
@@ -117,10 +151,22 @@ export default function Navbar() {
               </div>
             ) : (
               <>
-                <Button variant="ghost" className={`${scrolled ? 'text-primary' : 'text-white'}`} onClick={() => setLocation('/signin')}>
+                <Button
+                  variant="ghost"
+                  className={`${scrolled ? "text-primary" : "text-white"}`}
+                  onClick={() => setLocation("/signin")}
+                >
                   Sign In
                 </Button>
-                <Button variant={scrolled ? 'default' : 'outline'} className={scrolled ? 'btn-gradient' : 'border-white text-white hover:bg-white hover:text-foreground'} onClick={() => setLocation('/signup')}>
+                <Button
+                  variant={scrolled ? "default" : "outline"}
+                  className={
+                    scrolled
+                      ? "btn-gradient"
+                      : "border-white text-white hover:bg-white hover:text-foreground"
+                  }
+                  onClick={() => setLocation("/signup")}
+                >
                   Sign Up
                 </Button>
               </>
@@ -130,7 +176,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={toggleMenu}
-              className={`p-2 rounded-md ${scrolled ? 'text-foreground hover:text-primary' : 'text-white'} focus:outline-none`}
+              className={`p-2 rounded-md ${scrolled ? "text-foreground hover:text-primary" : "text-white"} focus:outline-none`}
             >
               {isOpen ? (
                 <X className="h-6 w-6" />
@@ -141,30 +187,46 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {isOpen && (
         <div className="lg:hidden bg-white shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link href="/" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100" onClick={closeMenu}>
+            <Link
+              href="/"
+              className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100"
+              onClick={closeMenu}
+            >
               <div className="flex items-center">
                 <Home className="h-5 w-5 mr-2" />
                 Home
               </div>
             </Link>
-            <Link href="/experiences" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100" onClick={closeMenu}>
+            <Link
+              href="/experiences"
+              className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100"
+              onClick={closeMenu}
+            >
               <div className="flex items-center">
                 <Map className="h-5 w-5 mr-2" />
                 Experiences
               </div>
             </Link>
-            <Link href="/accommodations" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100" onClick={closeMenu}>
+            <Link
+              href="/accommodations"
+              className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100"
+              onClick={closeMenu}
+            >
               <div className="flex items-center">
                 <Bed className="h-5 w-5 mr-2" />
                 Accommodations
               </div>
             </Link>
-            <Link href="/packages" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100" onClick={closeMenu}>
+            <Link
+              href="/packages"
+              className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100"
+              onClick={closeMenu}
+            >
               <div className="flex items-center">
                 <Package className="h-5 w-5 mr-2" />
                 Packages
@@ -177,26 +239,43 @@ export default function Navbar() {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={user?.profile_picture || ''} alt={user?.first_name} />
+                      <AvatarImage
+                        src={user?.profile_picture || ""}
+                        alt={user?.first_name}
+                      />
                       <AvatarFallback className="bg-primary text-white">
-                        {user?.first_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                        {user?.first_name?.charAt(0) ||
+                          user?.email?.charAt(0) ||
+                          "U"}
                       </AvatarFallback>
                     </Avatar>
                   </div>
                   <div className="ml-3">
-                    <div className="text-base font-medium text-foreground">{user?.first_name} {user?.last_name}</div>
-                    <div className="text-sm font-medium text-gray-500">{user?.email}</div>
+                    <div className="text-base font-medium text-foreground">
+                      {user?.first_name} {user?.last_name}
+                    </div>
+                    <div className="text-sm font-medium text-gray-500">
+                      {user?.email}
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <Link href="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100" onClick={closeMenu}>
+                  <Link
+                    href="/profile"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100"
+                    onClick={closeMenu}
+                  >
                     <div className="flex items-center">
                       <User className="h-5 w-5 mr-2" />
                       Profile
                     </div>
                   </Link>
-                  {user?.role === 'admin' && (
-                    <Link href="/admin" className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100" onClick={closeMenu}>
+                  {user?.role === "admin" && (
+                    <Link
+                      href="/admin"
+                      className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-gray-100"
+                      onClick={closeMenu}
+                    >
                       <div className="flex items-center">
                         <Settings className="h-5 w-5 mr-2" />
                         Admin Dashboard
@@ -214,10 +293,23 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex flex-col px-5 space-y-3">
-                <Button variant="outline" className="w-full justify-start" onClick={() => { setLocation('/signin'); closeMenu(); }}>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setLocation("/signin");
+                    closeMenu();
+                  }}
+                >
                   Sign In
                 </Button>
-                <Button className="w-full btn-gradient" onClick={() => { setLocation('/signup'); closeMenu(); }}>
+                <Button
+                  className="w-full btn-gradient"
+                  onClick={() => {
+                    setLocation("/signup");
+                    closeMenu();
+                  }}
+                >
                   Sign Up
                 </Button>
               </div>
