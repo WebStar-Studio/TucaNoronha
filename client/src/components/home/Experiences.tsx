@@ -1,25 +1,58 @@
-import { useEffect } from 'react';
-import { Star } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { Star, MapPin, Clock, ArrowRight, ChevronRight } from 'lucide-react';
 import { useExperiencesStore } from '@/store/experiencesStore';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
-import { ElevatedCard } from '@/components/ui/ElevatedCard';
-import { BorderedCard } from '@/components/ui/BorderedCard';
-import { MinimalCard } from '@/components/ui/MinimalCard';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Experiences() {
   const { featuredExperiences, isLoading, loadFeaturedExperiences } = useExperiencesStore();
+  const [isInView, setIsInView] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     loadFeaturedExperiences();
   }, [loadFeaturedExperiences]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <section id="experiences" className="py-20 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center mb-12 animate-slide-up">
-        <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Unforgettable Experiences</h2>
-        <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+    <section 
+      id="experiences" 
+      ref={sectionRef}
+      className="py-20 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden"
+    >
+      {/* Decorative elements */}
+      <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl"></div>
+      
+      <div className={`text-center mb-16 transform transition-all duration-1000 ${isInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        <span className="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4 animate-pulse-slow">
+          Explore Our Experiences
+        </span>
+        <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">
+          Unforgettable <span className="text-primary">Experiences</span>
+        </h2>
+        <div className="w-24 h-1 bg-primary/30 mx-auto mt-4 rounded-full"></div>
+        <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
           Discover the most extraordinary activities that Fernando de Noronha has to offer, handpicked by our local experts.
         </p>
       </div>
@@ -29,7 +62,7 @@ export default function Experiences() {
         {isLoading ? (
           // Loading skeleton
           Array(3).fill(0).map((_, index) => (
-            <div key={index} className="rounded-xl overflow-hidden bg-white">
+            <div key={index} className="rounded-xl overflow-hidden glass-card">
               <Skeleton className="h-64 w-full" />
               <div className="p-6 space-y-4">
                 <Skeleton className="h-6 w-3/4" />
@@ -46,19 +79,12 @@ export default function Experiences() {
         ) : featuredExperiences.length > 0 ? (
           // Map through featured experiences
           featuredExperiences.slice(0, 3).map((experience, index) => {
-            // Determine which card style to use for each experience
-            const CardComponent = index === 0 
-              ? ElevatedCard 
-              : index === 1 
-                ? BorderedCard 
-                : MinimalCard;
-            
             // Determine badge style based on index
             const badgeClass = index === 0 
-              ? "bg-accent text-white" 
+              ? "bg-gradient-to-r from-accent to-accent/80 text-white" 
               : index === 1 
-                ? "bg-secondary text-white" 
-                : "bg-primary text-white";
+                ? "bg-gradient-to-r from-secondary to-secondary/80 text-white" 
+                : "bg-gradient-to-r from-primary to-primary/80 text-white";
             
             // Determine badge text based on index
             const badgeText = index === 0 
@@ -68,42 +94,62 @@ export default function Experiences() {
                 : "Premium";
 
             return (
-              <CardComponent key={experience.id} className="overflow-hidden animate-slide-up" style={{animationDelay: `${0.1 * (index + 1)}s`}}>
-                <div className="relative h-64">
+              <div 
+                key={experience.id} 
+                className={`futuristic-card overflow-hidden transform transition-all duration-1000 ${isInView ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95'}`}
+                style={{ transitionDelay: `${0.2 * (index + 1)}s` }}
+              >
+                <div className="relative h-64 overflow-hidden group">
                   <img 
                     src={experience.image} 
                     alt={experience.title} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className={`absolute top-4 right-4 ${badgeClass} text-sm font-medium px-3 py-1 rounded-full`}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                  <div className={`absolute top-4 right-4 ${badgeClass} text-sm font-medium px-3 py-1 rounded-full shadow-lg backdrop-blur-sm`}>
                     {badgeText}
                   </div>
+                  <div className="absolute bottom-4 left-4 flex items-center text-white">
+                    <MapPin className="h-4 w-4 mr-1 text-white/80" />
+                    <span className="text-sm">{experience.location || 'Fernando de Noronha'}</span>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start">
+                <div className="p-6 relative">
+                  <div className="flex justify-between items-start mb-2">
                     <h3 className="text-xl font-montserrat font-bold">{experience.title}</h3>
-                    <div className="flex items-center">
+                    <div className="flex items-center bg-accent/10 px-2 py-1 rounded-lg">
                       <Star className="h-4 w-4 text-accent fill-accent" />
-                      <span className="ml-1 font-medium">{experience.rating?.toFixed(1) || '5.0'}</span>
+                      <span className="ml-1 font-medium text-accent">{experience.rating?.toFixed(1) || '5.0'}</span>
                     </div>
                   </div>
-                  <p className="mt-2 text-gray-600 line-clamp-2">{experience.description}</p>
-                  <div className="mt-4 flex justify-between items-center">
-                    <span className="text-primary font-semibold">${experience.price.toFixed(0)} per person</span>
-                    <span className="text-sm text-gray-500">{experience.duration}</span>
+                  
+                  <div className="flex items-center text-gray-500 mt-2 mb-3">
+                    <Clock className="h-4 w-4 mr-1" />
+                    <span className="text-sm">{experience.duration}</span>
                   </div>
-                  <Button 
-                    className={index === 0 
-                      ? "mt-4 w-full btn-gradient" 
-                      : index === 1 
-                        ? "mt-4 w-full bg-white border border-primary text-primary hover:bg-primary hover:text-white"
-                        : "mt-4 w-full accent-gradient"
-                    }
-                  >
-                    Book Now
-                  </Button>
+                  
+                  <p className="text-gray-600 line-clamp-2 mb-4">{experience.description}</p>
+                  
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex flex-col">
+                      <span className="text-sm text-gray-500">Starting from</span>
+                      <span className="text-primary font-semibold text-lg">${experience.price.toFixed(0)}</span>
+                    </div>
+                    
+                    <Button 
+                      className={index === 0 
+                        ? "btn-gradient rounded-full" 
+                        : index === 1 
+                          ? "secondary-gradient rounded-full"
+                          : "accent-gradient rounded-full"
+                      }
+                    >
+                      <span>Book Now</span>
+                      <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </div>
                 </div>
-              </CardComponent>
+              </div>
             );
           })
         ) : (
@@ -114,13 +160,14 @@ export default function Experiences() {
         )}
       </div>
       
-      <div className="mt-12 text-center">
+      <div className={`mt-16 text-center transform transition-all duration-1000 delay-500 ${isInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
         <Link href="/experiences">
-          <Button variant="outline" className="inline-flex items-center px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-medium transition">
+          <Button 
+            variant="outline" 
+            className="px-8 py-6 rounded-full bg-white border border-primary/20 text-primary hover:bg-primary hover:text-white font-medium shadow-lg transition-all hover:scale-105 group"
+          >
             View All Experiences
-            <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
+            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </Link>
       </div>
