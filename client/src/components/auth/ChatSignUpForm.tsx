@@ -473,7 +473,7 @@ export default function ChatSignUpForm() {
               </div>
             </div>
             
-            <div className="backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 border border-white/20 shadow-lg">
+            <div className="backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 border border-white/20 shadow-lg max-h-[500px] overflow-y-auto">
               <TravelPreferences 
                 onComplete={handleTravelPreferencesComplete} 
                 isSubmitting={isLoading}
