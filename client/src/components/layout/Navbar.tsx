@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { useAuthStore } from "@/store/authStore";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -27,7 +27,9 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [, setLocation] = useLocation();
-  const { isAuthenticated, user, signOut } = useAuthStore();
+  const { user, logoutMutation } = useAuth();
+  
+  const isAuthenticated = !!user;
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
@@ -46,7 +48,7 @@ export default function Navbar() {
   }, []);
 
   const handleSignOut = async () => {
-    await signOut();
+    await logoutMutation.mutateAsync();
     setLocation("/");
     closeMenu();
   };
@@ -108,11 +110,11 @@ export default function Navbar() {
                     >
                       <Avatar className="h-9 w-9">
                         <AvatarImage
-                          src={user?.profile_picture || ""}
-                          alt={user?.first_name}
+                          src={user?.profilePicture || ""}
+                          alt={user?.firstName}
                         />
                         <AvatarFallback className="bg-primary text-white">
-                          {user?.first_name?.charAt(0) ||
+                          {user?.firstName?.charAt(0) ||
                             user?.email?.charAt(0) ||
                             "U"}
                         </AvatarFallback>
@@ -123,7 +125,7 @@ export default function Navbar() {
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          {user?.first_name} {user?.last_name}
+                          {user?.firstName} {user?.lastName}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
                           {user?.email}
@@ -240,11 +242,11 @@ export default function Navbar() {
                   <div className="flex-shrink-0">
                     <Avatar className="h-10 w-10">
                       <AvatarImage
-                        src={user?.profile_picture || ""}
-                        alt={user?.first_name}
+                        src={user?.profilePicture || ""}
+                        alt={user?.firstName}
                       />
                       <AvatarFallback className="bg-primary text-white">
-                        {user?.first_name?.charAt(0) ||
+                        {user?.firstName?.charAt(0) ||
                           user?.email?.charAt(0) ||
                           "U"}
                       </AvatarFallback>

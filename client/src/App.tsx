@@ -15,43 +15,10 @@ import ExperiencesPage from "@/pages/ExperiencesPage";
 import AccommodationsPage from "@/pages/AccommodationsPage";
 import PackagesPage from "@/pages/PackagesPage";
 import NotFound from "@/pages/not-found";
-import { useAuthStore } from "@/store/authStore";
-import { useEffect } from "react";
-import { useLocation } from "wouter";
-
-function ProtectedRoute({ component: Component, adminOnly = false }: { component: React.FC, adminOnly?: boolean }) {
-  const { isAuthenticated, user } = useAuthStore();
-  const [, setLocation] = useLocation();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setLocation("/signin");
-      return;
-    }
-
-    if (adminOnly && user?.role !== "admin") {
-      setLocation("/");
-    }
-  }, [isAuthenticated, user, adminOnly, setLocation]);
-
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  if (adminOnly && user?.role !== "admin") {
-    return null;
-  }
-
-  return <Component />;
-}
+import { ProtectedRoute } from "./lib/protected-route";
+import { AuthProvider } from "@/hooks/use-auth";
 
 function Router() {
-  const { initAuth } = useAuthStore();
-
-  useEffect(() => {
-    initAuth();
-  }, [initAuth]);
-
   return (
     <>
       <Navbar />
@@ -63,12 +30,8 @@ function Router() {
         <Route path="/experiences" component={ExperiencesPage} />
         <Route path="/accommodations" component={AccommodationsPage} />
         <Route path="/packages" component={PackagesPage} />
-        <Route path="/profile">
-          {() => <ProtectedRoute component={Profile} />}
-        </Route>
-        <Route path="/admin">
-          {() => <ProtectedRoute component={Admin} adminOnly={true} />}
-        </Route>
+        <ProtectedRoute path="/profile" component={Profile} />
+        <ProtectedRoute path="/admin" component={Admin} adminOnly={true} />
         <Route component={NotFound} />
       </Switch>
       <Footer />
@@ -79,10 +42,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
