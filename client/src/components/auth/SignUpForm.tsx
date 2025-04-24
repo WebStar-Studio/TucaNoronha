@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -45,6 +45,18 @@ export default function SignUpForm() {
   
   // Store user travel preferences
   const [travelPreferences, setTravelPreferences] = useState<TravelPreferencesData | null>(null);
+  
+  // Track the current conversation step in account creation
+  const [accountStep, setAccountStep] = useState<'name' | 'email' | 'password' | 'review'>('name');
+  
+  // Track if each field has been completed to progressively show fields
+  const [fieldCompleted, setFieldCompleted] = useState({
+    firstName: false,
+    lastName: false,
+    email: false,
+    password: false,
+    confirmPassword: false
+  });
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -55,7 +67,49 @@ export default function SignUpForm() {
       password: '',
       confirmPassword: '',
     },
+    mode: 'onChange',
   });
+  
+  // Watch form values to know when to progress
+  const firstName = form.watch('firstName');
+  const lastName = form.watch('lastName');
+  const email = form.watch('email');
+  const password = form.watch('password');
+  const confirmPassword = form.watch('confirmPassword');
+  
+  // Auto-advance the conversation when valid data is entered
+  useEffect(() => {
+    // If both first and last name are valid and we're on the name step
+    if (firstName.length >= 2 && lastName.length >= 2 && accountStep === 'name' && !fieldCompleted.firstName) {
+      // Mark name fields as completed
+      setFieldCompleted(prev => ({ ...prev, firstName: true, lastName: true }));
+      // Use timeout to make it feel more natural
+      setTimeout(() => {
+        setAccountStep('email');
+      }, 800);
+    }
+  }, [firstName, lastName, accountStep, fieldCompleted.firstName]);
+  
+  useEffect(() => {
+    // If email is valid and we're on the email step
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(email) && accountStep === 'email' && !fieldCompleted.email) {
+      setFieldCompleted(prev => ({ ...prev, email: true }));
+      setTimeout(() => {
+        setAccountStep('password');
+      }, 800);
+    }
+  }, [email, accountStep, fieldCompleted.email]);
+  
+  useEffect(() => {
+    // If password is valid and matches confirmation 
+    if (password.length >= 8 && password === confirmPassword && accountStep === 'password' && !fieldCompleted.password) {
+      setFieldCompleted(prev => ({ ...prev, password: true, confirmPassword: true }));
+      setTimeout(() => {
+        setAccountStep('review');
+      }, 800);
+    }
+  }, [password, confirmPassword, accountStep, fieldCompleted.password]);
 
   const onSubmitAccount = (data: SignUpFormValues) => {
     // Store basic account info and move to travel preferences
@@ -170,164 +224,248 @@ export default function SignUpForm() {
             
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmitAccount)} className="space-y-5">
-                {/* User response area with futuristic styling */}
-                <div className="space-y-5 backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
-                          <FormLabel className="text-primary font-medium px-4 pt-2 block">First Name</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="John" 
-                              {...field}
-                              autoComplete="given-name"
-                              className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
-                            />
-                          </FormControl>
-                          <FormMessage className="px-4 pb-2" />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
-                          <FormLabel className="text-primary font-medium px-4 pt-2 block">Last Name</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Doe" 
-                              {...field}
-                              autoComplete="family-name"
-                              className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
-                            />
-                          </FormControl>
-                          <FormMessage className="px-4 pb-2" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-                
-                {/* Virtual assistant chat bubble - email */}
-                <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
-                  <div className="pl-2">
-                    <p className="text-muted-foreground">Great! Now, what email address would you like to use for your account?</p>
-                  </div>
-                </div>
-                
-                {/* User response - email */}
-                <div className="space-y-5 backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
-                        <FormLabel className="text-primary font-medium px-4 pt-2 block">Email</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="john@example.com" 
-                            {...field} 
-                            type="email"
-                            autoComplete="email"
-                            className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                <AnimatePresence mode="popLayout">
+                  {/* First name & last name fields */}
+                  {accountStep === 'name' && (
+                    <motion.div
+                      key="name-fields"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-5"
+                    >
+                      <div className="backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="firstName"
+                            render={({ field }) => (
+                              <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                                <FormLabel className="text-primary font-medium px-4 pt-2 block">First Name</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    placeholder="John" 
+                                    {...field}
+                                    autoComplete="given-name"
+                                    className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                                  />
+                                </FormControl>
+                                <FormMessage className="px-4 pb-2" />
+                              </FormItem>
+                            )}
                           />
-                        </FormControl>
-                        <FormMessage className="px-4 pb-2" />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
-                {/* Virtual assistant chat bubble - password */}
-                <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
-                  <div className="pl-2">
-                    <p className="text-muted-foreground">Perfect! Now choose a secure password to keep your paradise experience safe.</p>
-                  </div>
-                </div>
-                
-                {/* User response - password */}
-                <div className="space-y-5 backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
-                        <FormLabel className="text-primary font-medium px-4 pt-2 block">Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input 
-                              placeholder="••••••••" 
-                              {...field} 
-                              type={showPassword ? "text" : "password"}
-                              autoComplete="new-password"
-                              className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
-                            />
-                            <button 
-                              type="button"
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                              onClick={toggleShowPassword}
-                              tabIndex={-1}
-                            >
-                              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
-                          </div>
-                        </FormControl>
-                        <FormMessage className="px-4 pb-2" />
-                      </FormItem>
-                    )}
-                  />
+                          
+                          <FormField
+                            control={form.control}
+                            name="lastName"
+                            render={({ field }) => (
+                              <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                                <FormLabel className="text-primary font-medium px-4 pt-2 block">Last Name</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    placeholder="Doe" 
+                                    {...field}
+                                    autoComplete="family-name"
+                                    className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                                  />
+                                </FormControl>
+                                <FormMessage className="px-4 pb-2" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                   
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
-                        <FormLabel className="text-primary font-medium px-4 pt-2 block">Confirm Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input 
-                              placeholder="••••••••" 
-                              {...field} 
-                              type={showConfirmPassword ? "text" : "password"}
-                              autoComplete="new-password"
-                              className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
-                            />
-                            <button 
-                              type="button"
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                              onClick={toggleShowConfirmPassword}
-                              tabIndex={-1}
-                            >
-                              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
-                          </div>
-                        </FormControl>
-                        <FormMessage className="px-4 pb-2" />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
-                {/* Virtual assistant final prompt */}
-                <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
-                  <div className="pl-2">
-                    <p className="text-muted-foreground">Wonderful! Now I'll ask about your travel preferences to create your perfect paradise experience.</p>
-                  </div>
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full group btn-gradient mt-6 space-x-2 py-6 rounded-xl text-lg font-medium shadow-md hover:shadow-lg transition-all duration-300"
-                  disabled={isLoading || !form.formState.isValid}
-                >
-                  <span>Continue to Travel Preferences</span>
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Button>
+                  {/* Assistant chat - after name is entered and before email */}
+                  {(accountStep === 'email' || accountStep === 'password' || accountStep === 'review') && (
+                    <motion.div
+                      key="name-response"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
+                        <div className="pl-2">
+                          <p className="text-muted-foreground">Nice to meet you, {firstName} {lastName}! Now, what email address would you like to use for your account?</p>
+                        </div>
+                      </div>
+                      
+                      {/* User's completed name info displayed as a message */}
+                      <div className="ml-auto max-w-[80%] p-3 bg-primary/10 text-primary rounded-tl-2xl rounded-bl-2xl rounded-tr-2xl">
+                        <div className="flex flex-col">
+                          <span className="font-medium">{firstName} {lastName}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                  
+                  {/* Email field */}
+                  {accountStep === 'email' && (
+                    <motion.div
+                      key="email-field"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                              <FormLabel className="text-primary font-medium px-4 pt-2 block">Email</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="john@example.com" 
+                                  {...field} 
+                                  type="email"
+                                  autoComplete="email"
+                                  className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                                />
+                              </FormControl>
+                              <FormMessage className="px-4 pb-2" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                  
+                  {/* Assistant chat - after email is entered and before password */}
+                  {(accountStep === 'password' || accountStep === 'review') && (
+                    <motion.div
+                      key="email-response"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
+                        <div className="pl-2">
+                          <p className="text-muted-foreground">Great! Now let's secure your account with a password.</p>
+                        </div>
+                      </div>
+                      
+                      {/* User's completed email displayed as a message */}
+                      <div className="ml-auto max-w-[80%] p-3 bg-primary/10 text-primary rounded-tl-2xl rounded-bl-2xl rounded-tr-2xl">
+                        <div className="flex flex-col">
+                          <span className="font-medium">{email}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                  
+                  {/* Password fields */}
+                  {accountStep === 'password' && (
+                    <motion.div
+                      key="password-fields"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="space-y-5 backdrop-blur-sm p-5 rounded-2xl bg-gradient-to-br from-white/50 to-white/10 border border-white/20 shadow-lg">
+                        <FormField
+                          control={form.control}
+                          name="password"
+                          render={({ field }) => (
+                            <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                              <FormLabel className="text-primary font-medium px-4 pt-2 block">Password</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input 
+                                    placeholder="••••••••" 
+                                    {...field} 
+                                    type={showPassword ? "text" : "password"}
+                                    autoComplete="new-password"
+                                    className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                                  />
+                                  <button 
+                                    type="button"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                    onClick={toggleShowPassword}
+                                    tabIndex={-1}
+                                  >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                  </button>
+                                </div>
+                              </FormControl>
+                              <FormMessage className="px-4 pb-2" />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="confirmPassword"
+                          render={({ field }) => (
+                            <FormItem className="backdrop-blur-sm overflow-hidden rounded-xl border border-primary/20 transition-all duration-300 hover:border-primary/50">
+                              <FormLabel className="text-primary font-medium px-4 pt-2 block">Confirm Password</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input 
+                                    placeholder="••••••••" 
+                                    {...field} 
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    autoComplete="new-password"
+                                    className="bg-transparent border-0 border-t rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-4"
+                                  />
+                                  <button 
+                                    type="button"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                    onClick={toggleShowConfirmPassword}
+                                    tabIndex={-1}
+                                  >
+                                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                  </button>
+                                </div>
+                              </FormControl>
+                              <FormMessage className="px-4 pb-2" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                  
+                  {/* Final review */}
+                  {accountStep === 'review' && (
+                    <motion.div
+                      key="review"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="space-y-5"
+                    >
+                      {/* Password confirmation message */}
+                      <div className="ml-auto max-w-[80%] p-3 bg-primary/10 text-primary rounded-tl-2xl rounded-bl-2xl rounded-tr-2xl">
+                        <div className="flex flex-col">
+                          <span className="font-medium">Password set successfully!</span>
+                        </div>
+                      </div>
+                      
+                      {/* Assistant final message */}
+                      <div className="p-5 bg-primary/5 backdrop-blur-sm rounded-2xl border border-primary/10 relative">
+                        <div className="pl-2">
+                          <p className="text-muted-foreground">Perfect! Now I'll ask about your travel preferences to create your perfect paradise experience.</p>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        type="submit" 
+                        className="w-full group btn-gradient mt-6 space-x-2 py-6 rounded-xl text-lg font-medium shadow-md hover:shadow-lg transition-all duration-300"
+                      >
+                        <span>Continue to Travel Preferences</span>
+                        <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </form>
             </Form>
             
