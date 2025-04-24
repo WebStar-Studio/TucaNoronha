@@ -57,7 +57,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/auth/login', async (req, res) => {
+  app.post('/api/auth/login', async (req: RequestWithSession, res: Response) => {
     try {
       const { email, password } = req.body;
       
@@ -85,7 +85,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/auth/logout', (req, res) => {
+  app.post('/api/auth/logout', (req: RequestWithSession, res: Response) => {
     req.session.destroy(err => {
       if (err) {
         return res.status(500).json({ message: 'Logout failed' });
@@ -94,7 +94,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get('/api/auth/me', async (req, res) => {
+  app.get('/api/auth/me', async (req: RequestWithSession, res: Response) => {
     if (!req.session.userId) {
       return res.status(401).json({ message: 'Not authenticated' });
     }
@@ -639,7 +639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // FAVORITES ROUTES
   // Auth middleware for protected routes
-  const requireAuth = (req: RequestWithSession, res: Response, next: NextFunction) => {
+  const requireAuth = (req: RequestWithSession, res: Response, next: NextFunction): Response | void => {
     if (!req.session.userId) {
       return res.status(401).json({ message: 'Authentication required' });
     }
@@ -733,7 +733,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update favorite notes
-  app.patch('/api/favorites/:id', requireAuth, async (req, res) => {
+  app.patch('/api/favorites/:id', requireAuth, async (req: RequestWithSession, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       const favorite = await storage.getFavoriteById(id);
@@ -761,7 +761,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Remove item from favorites
-  app.delete('/api/favorites/:id', requireAuth, async (req, res) => {
+  app.delete('/api/favorites/:id', requireAuth, async (req: RequestWithSession, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       const favorite = await storage.getFavoriteById(id);
