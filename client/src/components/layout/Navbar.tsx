@@ -100,7 +100,7 @@ export default function Navbar() {
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4">
-            <LanguageSelector />
+            <LanguageSelector isTransparent={!scrolled} />
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <DropdownMenu>
@@ -236,7 +236,7 @@ export default function Navbar() {
               </div>
             </Link>
             <div className="px-3 py-2">
-              <LanguageSelector />
+              <LanguageSelector isTransparent={false} />
             </div>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">

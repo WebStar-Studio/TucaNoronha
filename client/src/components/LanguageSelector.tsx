@@ -9,7 +9,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Check, Globe } from "lucide-react";
 
-const LanguageSelector = () => {
+interface LanguageSelectorProps {
+  isTransparent?: boolean;
+}
+
+const LanguageSelector = ({ isTransparent = false }: LanguageSelectorProps) => {
   const { i18n, t } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
 
@@ -31,7 +35,11 @@ const LanguageSelector = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 gap-1 text-sm">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className={`h-8 gap-1 text-sm ${isTransparent ? 'bg-white/90 hover:bg-white text-foreground shadow-sm' : ''}`}
+        >
           <Globe className="h-4 w-4" />
           <span className="hidden md:inline-flex">{t('common.language')}</span>
         </Button>
