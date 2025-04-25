@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,12 +23,14 @@ import {
   Settings,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LanguageSelector from "@/components/LanguageSelector";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [, setLocation] = useLocation();
   const { user, logoutMutation } = useAuth();
+  const { t } = useTranslation();
   
   const isAuthenticated = !!user;
 
@@ -77,29 +80,30 @@ export default function Navbar() {
                 href="/"
                 className={`px-3 py-2 text-sm font-medium ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-white"} transition-colors`}
               >
-                Home
+                {t('common.home')}
               </Link>
               <Link
                 href="/experiences"
                 className={`px-3 py-2 text-sm font-medium ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-white"} transition-colors`}
               >
-                Experiences
+                {t('common.experiences')}
               </Link>
               <Link
                 href="/accommodations"
                 className={`px-3 py-2 text-sm font-medium ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-white"} transition-colors`}
               >
-                Accommodations
+                {t('common.accommodations')}
               </Link>
               <Link
                 href="/packages"
                 className={`px-3 py-2 text-sm font-medium ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-white"} transition-colors`}
               >
-                Packages
+                {t('common.packages')}
               </Link>
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4">
+            <LanguageSelector />
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <DropdownMenu>
@@ -135,18 +139,18 @@ export default function Navbar() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => setLocation("/profile")}>
                       <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
+                      <span>{t('common.profile')}</span>
                     </DropdownMenuItem>
                     {user?.role === "admin" && (
                       <DropdownMenuItem onClick={() => setLocation("/admin")}>
                         <Settings className="mr-2 h-4 w-4" />
-                        <span>Admin Dashboard</span>
+                        <span>{t('common.admin')}</span>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="mr-2 h-4 w-4" />
-                      <span>Sign out</span>
+                      <span>{t('common.logout')}</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -158,7 +162,7 @@ export default function Navbar() {
                   className={`${scrolled ? "text-primary" : "text-white"}`}
                   onClick={() => setLocation("/signin")}
                 >
-                  Sign In
+                  {t('common.login')}
                 </Button>
                 <Button
                   variant={scrolled ? "default" : "outline"}
@@ -169,7 +173,7 @@ export default function Navbar() {
                   }
                   onClick={() => setLocation("/signup")}
                 >
-                  Sign Up
+                  {t('common.register')}
                 </Button>
               </>
             )}
@@ -201,7 +205,7 @@ export default function Navbar() {
             >
               <div className="flex items-center">
                 <Home className="h-5 w-5 mr-2" />
-                Home
+                {t('common.home')}
               </div>
             </Link>
             <Link
@@ -211,7 +215,7 @@ export default function Navbar() {
             >
               <div className="flex items-center">
                 <Map className="h-5 w-5 mr-2" />
-                Experiences
+                {t('common.experiences')}
               </div>
             </Link>
             <Link
@@ -221,7 +225,7 @@ export default function Navbar() {
             >
               <div className="flex items-center">
                 <Bed className="h-5 w-5 mr-2" />
-                Accommodations
+                {t('common.accommodations')}
               </div>
             </Link>
             <Link
@@ -231,9 +235,12 @@ export default function Navbar() {
             >
               <div className="flex items-center">
                 <Package className="h-5 w-5 mr-2" />
-                Packages
+                {t('common.packages')}
               </div>
             </Link>
+            <div className="px-3 py-2">
+              <LanguageSelector />
+            </div>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
             {isAuthenticated ? (
@@ -269,7 +276,7 @@ export default function Navbar() {
                   >
                     <div className="flex items-center">
                       <User className="h-5 w-5 mr-2" />
-                      Profile
+                      {t('common.profile')}
                     </div>
                   </Link>
                   {user?.role === "admin" && (
@@ -280,7 +287,7 @@ export default function Navbar() {
                     >
                       <div className="flex items-center">
                         <Settings className="h-5 w-5 mr-2" />
-                        Admin Dashboard
+                        {t('common.admin')}
                       </div>
                     </Link>
                   )}
@@ -289,7 +296,7 @@ export default function Navbar() {
                     onClick={handleSignOut}
                   >
                     <LogOut className="h-5 w-5 mr-2" />
-                    Sign out
+                    {t('common.logout')}
                   </button>
                 </div>
               </div>
@@ -303,7 +310,7 @@ export default function Navbar() {
                     closeMenu();
                   }}
                 >
-                  Sign In
+                  {t('common.login')}
                 </Button>
                 <Button
                   className="w-full btn-gradient"
@@ -312,7 +319,7 @@ export default function Navbar() {
                     closeMenu();
                   }}
                 >
-                  Sign Up
+                  {t('common.register')}
                 </Button>
               </div>
             )}
