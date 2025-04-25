@@ -47,7 +47,7 @@ export default function SignInForm() {
         title: 'Welcome back!',
         description: 'You have successfully signed in.',
       });
-      setLocation('/');
+      setLocation('/profile');
     } catch (err) {
       // Error is already handled in the auth store
     }

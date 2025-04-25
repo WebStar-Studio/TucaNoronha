@@ -28,8 +28,8 @@ import {
   TabsTrigger 
 } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, Upload, User } from "lucide-react";
-import { SupabaseUser } from "@/lib/supabase";
+import { Loader2, Upload, User as UserIcon } from "lucide-react";
+import { User } from "@shared/schema";
 
 const profileSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),

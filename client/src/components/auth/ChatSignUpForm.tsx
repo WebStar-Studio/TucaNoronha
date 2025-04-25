@@ -152,9 +152,9 @@ export default function ChatSignUpForm() {
       // Show completion screen
       setRegistrationStep('completed');
       
-      // Redirect to home page after 2 seconds
+      // Redirect to profile page after 2 seconds
       setTimeout(() => {
-        setLocation('/');
+        setLocation('/profile');
       }, 2000);
       
     } catch (err) {
