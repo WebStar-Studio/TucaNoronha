@@ -47,8 +47,6 @@ export default function SignInForm() {
         title: 'Welcome back!',
         description: 'You have successfully signed in.',
       });
-      // Removed manual redirect - let the parent handle redirection
-      // This prevents the infinite update loop
     } catch (err) {
       // Error is already handled in the auth store
     }
@@ -65,7 +63,7 @@ export default function SignInForm() {
           {error}
         </div>
       )}
-      
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -86,7 +84,7 @@ export default function SignInForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="password"
@@ -120,7 +118,7 @@ export default function SignInForm() {
               </FormItem>
             )}
           />
-          
+
           <Button type="submit" className="w-full btn-gradient" disabled={isLoading}>
             {isLoading ? (
               <>
@@ -133,7 +131,7 @@ export default function SignInForm() {
           </Button>
         </form>
       </Form>
-      
+
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
           Don't have an account?{' '}
