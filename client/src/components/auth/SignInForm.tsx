@@ -47,7 +47,8 @@ export default function SignInForm() {
         title: 'Welcome back!',
         description: 'You have successfully signed in.',
       });
-      setLocation('/profile');
+      // Removed manual redirect - let the parent handle redirection
+      // This prevents the infinite update loop
     } catch (err) {
       // Error is already handled in the auth store
     }

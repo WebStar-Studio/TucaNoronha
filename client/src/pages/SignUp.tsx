@@ -24,7 +24,7 @@ export default function SignUp() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      setLocation("/");
+      setLocation("/profile");
     }
   }, [isAuthenticated, setLocation]);
 

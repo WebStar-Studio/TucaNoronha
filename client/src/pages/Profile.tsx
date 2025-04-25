@@ -28,8 +28,7 @@ import {
   TabsTrigger 
 } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, Upload, User as UserIcon } from "lucide-react";
-import { User } from "@shared/schema";
+import { Loader2, Upload, UserIcon } from "lucide-react";
 
 const profileSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -58,8 +57,8 @@ export default function Profile() {
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: user?.first_name || "",
-      lastName: user?.last_name || "",
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
       email: user?.email || "",
     },
   });
@@ -76,8 +75,8 @@ export default function Profile() {
   useEffect(() => {
     if (user) {
       profileForm.reset({
-        firstName: user.first_name || "",
-        lastName: user.last_name || "",
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
         email: user.email || "",
       });
     }
@@ -88,8 +87,8 @@ export default function Profile() {
     
     try {
       await updateProfile({
-        first_name: data.firstName,
-        last_name: data.lastName,
+        firstName: data.firstName,
+        lastName: data.lastName,
       });
       
       toast({
@@ -172,9 +171,9 @@ export default function Profile() {
             <CardContent className="flex flex-col items-center">
               <div className="relative mb-6">
                 <Avatar className="h-32 w-32">
-                  <AvatarImage src={user.profile_picture || ""} />
+                  <AvatarImage src={user.profilePicture || ""} />
                   <AvatarFallback className="text-2xl bg-primary text-white">
-                    {user.first_name?.[0]}{user.last_name?.[0]}
+                    {user.firstName?.[0]}{user.lastName?.[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div className="absolute -bottom-2 -right-2">
@@ -198,7 +197,7 @@ export default function Profile() {
                   />
                 </div>
               </div>
-              <h2 className="text-xl font-semibold">{user.first_name} {user.last_name}</h2>
+              <h2 className="text-xl font-semibold">{user.firstName} {user.lastName}</h2>
               <p className="text-gray-500">{user.email}</p>
               
               <div className="w-full mt-6">
