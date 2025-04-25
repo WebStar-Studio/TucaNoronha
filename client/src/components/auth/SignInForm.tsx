@@ -42,10 +42,13 @@ export default function SignInForm() {
 
   const onSubmit = async (data: SignInFormValues) => {
     try {
-      const response = await loginMutation.mutateAsync(data);
+      const response = await loginMutation.mutateAsync({
+        username: data.email, // API expects username, but our form uses email
+        password: data.password
+      });
       
       // Redirect based on user role
-      if (response.user.role === 'admin') {
+      if (response.user && response.user.role === 'admin') {
         setLocation('/admin');
       } else {
         setLocation('/dashboard');
