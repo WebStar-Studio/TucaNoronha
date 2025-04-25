@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useExperiencesStore } from "@/store/experiencesStore";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,9 +13,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useLocation } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useExperiences } from "@/hooks/use-experiences";
 
 export default function ExperiencesPage() {
-  const { experiences, isLoading, loadExperiences } = useExperiencesStore();
+  const { experiences, isLoadingExperiences: isLoading } = useExperiences();
   const [filteredExperiences, setFilteredExperiences] = useState<Experience[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState<string>("all");
@@ -30,9 +30,7 @@ export default function ExperiencesPage() {
   const dateParam = queryParams.get('date');
   const guestsParam = queryParams.get('guests');
 
-  useEffect(() => {
-    loadExperiences();
-  }, [loadExperiences]);
+  // React Query já carrega os dados automaticamente
 
   useEffect(() => {
     if (experiences.length > 0) {

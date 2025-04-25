@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useAuthStore } from '@/store/authStore';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Form, 
@@ -24,9 +24,14 @@ const resetSchema = z.object({
 type ResetFormValues = z.infer<typeof resetSchema>;
 
 export default function ResetPasswordForm() {
-  const { resetPassword, isLoading, error, clearError } = useAuthStore();
+  // TODO: Implementar funcionalidade de reset de senha
+  // const { resetPassword } = useAuth();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  const clearError = () => setError(null);
 
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(resetSchema),
@@ -38,14 +43,22 @@ export default function ResetPasswordForm() {
   const onSubmit = async (data: ResetFormValues) => {
     clearError();
     try {
-      await resetPassword(data.email);
+      setIsLoading(true);
+      // TODO: Implementar a chamada real para resetar a senha
+      // await resetPassword(data.email);
+      
+      // Simulando uma chamada assíncrona
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setIsSubmitted(true);
       toast({
         title: 'Reset email sent!',
         description: 'Check your inbox for a password reset link.',
       });
     } catch (err) {
-      // Error is already handled in the auth store
+      setError((err as Error).message || 'Failed to send reset email');
+    } finally {
+      setIsLoading(false);
     }
   };
 

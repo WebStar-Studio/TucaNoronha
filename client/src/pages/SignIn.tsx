@@ -2,10 +2,10 @@ import SignInForm from "@/components/auth/SignInForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { useAuthStore } from "@/store/authStore";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function SignIn() {
-  const { isAuthenticated } = useAuthStore();
+  const { user } = useAuth();
   const [, setLocation] = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
@@ -23,10 +23,10 @@ export default function SignIn() {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       setLocation("/profile");
     }
-  }, [isAuthenticated, setLocation]);
+  }, [user, setLocation]);
 
   return (
     <main className="relative min-h-screen flex items-center justify-center">

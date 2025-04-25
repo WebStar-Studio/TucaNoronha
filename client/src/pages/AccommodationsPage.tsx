@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAccommodationsStore } from "@/store/accommodationsStore";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAccommodations } from "@/hooks/use-accommodations";
 
 export default function AccommodationsPage() {
-  const { accommodations, isLoading, loadAccommodations } = useAccommodationsStore();
+  const { accommodations, isLoadingAccommodations: isLoading } = useAccommodations();
   const [filteredAccommodations, setFilteredAccommodations] = useState<Accommodation[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState<string>("all");
@@ -23,9 +23,7 @@ export default function AccommodationsPage() {
   const [onlyFeatured, setOnlyFeatured] = useState(false);
   const [sortBy, setSortBy] = useState<string>("featured");
 
-  useEffect(() => {
-    loadAccommodations();
-  }, [loadAccommodations]);
+  // O React Query já carrega os dados automaticamente
 
   useEffect(() => {
     if (accommodations.length > 0) {
@@ -55,10 +53,10 @@ export default function AccommodationsPage() {
       // Apply bedrooms filter
       if (bedrooms !== "all") {
         if (bedrooms === "4+") {
-          result = result.filter(acc => acc.bedrooms >= 4);
+          result = result.filter(acc => (acc.bedrooms || 0) >= 4);
         } else {
           const bedroomCount = Number(bedrooms);
-          result = result.filter(acc => acc.bedrooms === bedroomCount);
+          result = result.filter(acc => (acc.bedrooms || 0) === bedroomCount);
         }
       }
       

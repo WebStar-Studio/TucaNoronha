@@ -1,19 +1,14 @@
-import { useEffect } from 'react';
 import { Check } from 'lucide-react';
-import { usePackagesStore } from '@/store/packagesStore';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { ElevatedCard } from '@/components/ui/ElevatedCard';
 import { MinimalCard } from '@/components/ui/MinimalCard';
 import { BorderedCard } from '@/components/ui/BorderedCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { usePackages } from '@/hooks/use-packages';
 
 export default function Packages() {
-  const { featuredPackages, isLoading, loadFeaturedPackages } = usePackagesStore();
-
-  useEffect(() => {
-    loadFeaturedPackages();
-  }, [loadFeaturedPackages]);
+  const { featuredPackages, isLoadingFeaturedPackages: isLoading } = usePackages();
 
   return (
     <section className="py-20 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

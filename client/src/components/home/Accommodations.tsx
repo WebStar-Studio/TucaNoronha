@@ -1,19 +1,14 @@
-import { useEffect } from 'react';
 import { Star } from 'lucide-react';
-import { useAccommodationsStore } from '@/store/accommodationsStore';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { Badge } from '@/components/ui/badge';
 import { ElevatedCard } from '@/components/ui/ElevatedCard';
 import { BorderedCard } from '@/components/ui/BorderedCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAccommodations } from '@/hooks/use-accommodations';
 
 export default function Accommodations() {
-  const { featuredAccommodations, isLoading, loadFeaturedAccommodations } = useAccommodationsStore();
-
-  useEffect(() => {
-    loadFeaturedAccommodations();
-  }, [loadFeaturedAccommodations]);
+  const { featuredAccommodations, isLoadingFeaturedAccommodations: isLoading } = useAccommodations();
 
   return (
     <section className="py-20 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

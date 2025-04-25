@@ -1,16 +1,16 @@
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
-import { useAuthStore } from '@/store/authStore';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function Cta() {
   const [, setLocation] = useLocation();
-  const { isAuthenticated } = useAuthStore();
+  const { user } = useAuth();
 
   const handlePlanTrip = () => {
-    if (isAuthenticated) {
+    if (user) {
       setLocation('/packages');
     } else {
-      setLocation('/signup');
+      setLocation('/auth');
     }
   };
 

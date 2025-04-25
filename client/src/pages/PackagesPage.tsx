@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { usePackagesStore } from "@/store/packagesStore";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,9 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePackages } from "@/hooks/use-packages";
 
 export default function PackagesPage() {
-  const { packages, isLoading, loadPackages } = usePackagesStore();
+  const { packages, isLoadingPackages: isLoading } = usePackages();
   const [filteredPackages, setFilteredPackages] = useState<Package[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState<string>("all");
@@ -24,9 +24,7 @@ export default function PackagesPage() {
   const [onlyFeatured, setOnlyFeatured] = useState(false);
   const [sortBy, setSortBy] = useState<string>("featured");
 
-  useEffect(() => {
-    loadPackages();
-  }, [loadPackages]);
+  // O React Query já carrega os dados automaticamente
 
   useEffect(() => {
     if (packages.length > 0) {

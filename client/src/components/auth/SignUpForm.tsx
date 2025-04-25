@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useAuthStore } from '@/store/authStore';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,7 +34,8 @@ const signUpSchema = z.object({
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 export default function SignUpForm() {
-  const { signUp, isLoading, error, clearError } = useAuthStore();
+  const { registerMutation, error } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
@@ -121,17 +122,19 @@ export default function SignUpForm() {
     setTravelPreferences(preferences);
     
     try {
+      setIsLoading(true);
       // Create account with travel preferences
       const formData = form.getValues();
       
       // Create the user with travel preferences data
-      await signUp(
-        formData.email, 
-        formData.password, 
-        formData.firstName, 
-        formData.lastName,
-        // Add travel preferences
-        {
+      await registerMutation.mutateAsync({
+        username: formData.email,
+        email: formData.email, 
+        password: formData.password, 
+        firstName: formData.firstName, 
+        lastName: formData.lastName,
+        role: 'user',
+        travelPreferences: {
           travelDates: preferences.travelDates,
           groupSize: preferences.groupSize,
           travelInterests: preferences.travelInterests,
@@ -142,7 +145,7 @@ export default function SignUpForm() {
           specialRequirements: preferences.specialRequirements,
           previousVisit: preferences.previousVisit,
         }
-      );
+      });
       
       toast({
         title: 'Registration successful!',

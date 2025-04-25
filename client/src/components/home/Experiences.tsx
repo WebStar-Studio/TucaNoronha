@@ -1,18 +1,14 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Star, MapPin, Clock, ArrowRight, ChevronRight } from 'lucide-react';
-import { useExperiencesStore } from '@/store/experiencesStore';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useExperiences } from '@/hooks/use-experiences';
 
 export default function Experiences() {
-  const { featuredExperiences, isLoading, loadFeaturedExperiences } = useExperiencesStore();
+  const { featuredExperiences, isLoadingFeaturedExperiences: isLoading } = useExperiences();
   const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    loadFeaturedExperiences();
-  }, [loadFeaturedExperiences]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
