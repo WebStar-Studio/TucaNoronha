@@ -38,7 +38,7 @@ const LanguageSelector = ({ isTransparent = false }: LanguageSelectorProps) => {
         <Button 
           variant="ghost" 
           size="sm" 
-          className={`h-8 gap-1 text-sm ${isTransparent ? 'text-foreground shadow-sm bg-transparent' : ''}`}
+          className={`h-8 gap-1 text-sm ${isTransparent ? 'text-white shadow-sm bg-transparent' : 'text-foreground'}`}
         >
           <Globe className="h-4 w-4" />
         </Button>
