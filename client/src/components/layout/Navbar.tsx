@@ -40,14 +40,12 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const shouldBeScrolled = window.scrollY > 10;
-      if (shouldBeScrolled !== scrolled) {
-        setScrolled(shouldBeScrolled);
-      }
+      setScrolled(shouldBeScrolled);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrolled]);
+  }, []); // Removendo a dependência de scrolled para evitar loop infinito
 
   const handleSignOut = async () => {
     await logoutMutation.mutateAsync();

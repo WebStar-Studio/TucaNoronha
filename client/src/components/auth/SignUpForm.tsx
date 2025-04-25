@@ -482,14 +482,13 @@ export default function SignUpForm() {
                     </motion.div>
                   </AnimatePresence>
                 </div>
-                </AnimatePresence>
               </form>
             </Form>
             
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{' '}
-                <Link href="/signin" className="text-primary hover:underline">
+                <Link href="/auth" className="text-primary hover:underline">
                   Sign in
                 </Link>
               </p>

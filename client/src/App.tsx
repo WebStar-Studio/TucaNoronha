@@ -6,8 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Home from "@/pages/Home";
-import SignIn from "@/pages/SignIn";
-import SignUp from "@/pages/SignUp";
+import AuthPage from "@/pages/auth-page";
 import ResetPassword from "@/pages/ResetPassword";
 import Profile from "@/pages/Profile";
 import Admin from "@/pages/Admin";
@@ -24,14 +23,13 @@ function Router() {
       <Navbar />
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/auth" component={SignIn} />
+        <Route path="/auth" component={AuthPage} />
         <Route path="/reset-password" component={ResetPassword} />
         <Route path="/experiences" component={ExperiencesPage} />
         <Route path="/accommodations" component={AccommodationsPage} />
         <Route path="/packages" component={PackagesPage} />
         <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/admin" component={Admin} adminOnly={true} />
-        <Route path="/signup" component={SignUp} />
         <Route component={NotFound} />
       </Switch>
       <Footer />
