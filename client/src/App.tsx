@@ -10,6 +10,7 @@ import AuthPage from "@/pages/auth-page";
 import ResetPassword from "@/pages/ResetPassword";
 import Profile from "@/pages/Profile";
 import Admin from "@/pages/Admin";
+import Dashboard from "@/pages/Dashboard";
 import ExperiencesPage from "@/pages/ExperiencesPage";
 import AccommodationsPage from "@/pages/AccommodationsPage";
 import PackagesPage from "@/pages/PackagesPage";
@@ -29,6 +30,7 @@ function Router() {
         <Route path="/accommodations" component={AccommodationsPage} />
         <Route path="/packages" component={PackagesPage} />
         <ProtectedRoute path="/profile" component={Profile} />
+        <ProtectedRoute path="/dashboard" component={Dashboard} />
         <ProtectedRoute path="/admin" component={Admin} adminOnly={true} />
         <Route component={NotFound} />
       </Switch>

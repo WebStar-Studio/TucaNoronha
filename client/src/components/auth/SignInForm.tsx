@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useAuthStore } from '@/store/authStore';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
 import { 
@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
 
 const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -26,10 +26,11 @@ const signInSchema = z.object({
 type SignInFormValues = z.infer<typeof signInSchema>;
 
 export default function SignInForm() {
-  const { signIn, isLoading, error, clearError } = useAuthStore();
+  const { loginMutation } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -40,15 +41,17 @@ export default function SignInForm() {
   });
 
   const onSubmit = async (data: SignInFormValues) => {
-    clearError();
     try {
-      await signIn(data.email, data.password);
-      toast({
-        title: 'Welcome back!',
-        description: 'You have successfully signed in.',
-      });
+      const response = await loginMutation.mutateAsync(data);
+      
+      // Redirect based on user role
+      if (response.user.role === 'admin') {
+        setLocation('/admin');
+      } else {
+        setLocation('/dashboard');
+      }
     } catch (err) {
-      // Error is already handled in the auth store
+      // Error is already handled in the mutation's onError callback
     }
   };
 
@@ -58,23 +61,17 @@ export default function SignInForm() {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      {error && (
-        <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm">
-          {error}
-        </div>
-      )}
-
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t('auth.email', 'Email')}</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="john@example.com" 
+                    placeholder="yourname@example.com" 
                     {...field} 
                     type="email"
                     autoComplete="email"
@@ -90,7 +87,7 @@ export default function SignInForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t('auth.password', 'Password')}</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input 
@@ -109,37 +106,26 @@ export default function SignInForm() {
                     </button>
                   </div>
                 </FormControl>
-                <div className="flex justify-end">
-                  <Link href="/reset-password" className="text-sm text-primary hover:underline">
-                    Forgot password?
-                  </Link>
-                </div>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full btn-gradient" disabled={isLoading}>
-            {isLoading ? (
+          <Button 
+            type="submit" 
+            className="w-full btn-gradient" 
+            disabled={loginMutation.isPending}>
+            {loginMutation.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Signing In...
+                {t('auth.signingIn', 'Signing In...')}
               </>
             ) : (
-              "Sign In"
+              t('auth.signIn', 'Sign In')
             )}
           </Button>
         </form>
       </Form>
-
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
-          <Link href="/signup" className="text-primary hover:underline">
-            Sign up
-          </Link>
-        </p>
-      </div>
     </div>
   );
 }

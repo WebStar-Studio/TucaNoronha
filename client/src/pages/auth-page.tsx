@@ -38,7 +38,7 @@ export default function AuthPage() {
       </div>
       
       {/* Two-column layout */}
-      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 px-4 mt-16 mb-16">
+      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 px-4 mt-8 mb-8">
         {/* Hero section */}
         <div className="hidden md:flex flex-col justify-center p-8 text-white">
           <h1 className="text-4xl font-playfair mb-4">
@@ -78,26 +78,26 @@ export default function AuthPage() {
         {/* Auth forms */}
         <div className="w-full max-w-md mx-auto">
           <Card className="glass-card border-white/10 shadow-xl backdrop-blur-lg">
-            <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-playfair text-center">
+            <CardHeader className="space-y-1 py-4">
+              <CardTitle className="text-xl font-playfair text-center">
                 {activeTab === "signin" 
                   ? t('auth.signInTitle', 'Sign In') 
                   : t('auth.signUpTitle', 'Create an Account')}
               </CardTitle>
-              <CardDescription className="text-center">
+              <CardDescription className="text-center text-sm">
                 {activeTab === "signin"
                   ? t('auth.signInSubtitle', 'Enter your credentials to access your account')
                   : t('auth.signUpSubtitle', 'Sign up to start exploring Fernando de Noronha')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="py-2">
               <Tabs 
                 defaultValue="signin" 
                 value={activeTab} 
                 onValueChange={setActiveTab}
                 className="w-full"
               >
-                <TabsList className="grid grid-cols-2 mb-8">
+                <TabsList className="grid grid-cols-2 mb-4">
                   <TabsTrigger value="signin">{t('common.login')}</TabsTrigger>
                   <TabsTrigger value="signup">{t('common.register')}</TabsTrigger>
                 </TabsList>
