@@ -13,9 +13,9 @@ export default function Packages() {
   return (
     <section className="py-20 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center mb-12 animate-slide-up">
-        <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Curated Packages</h2>
+        <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Pacotes Selecionados</h2>
         <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
-          Experience the best of Fernando de Noronha with our carefully crafted all-inclusive packages.
+          Viva o melhor de Fernando de Noronha com nossos pacotes all-inclusive cuidadosamente elaborados.
         </p>
       </div>
       
@@ -110,7 +110,7 @@ export default function Packages() {
                           : "accent-gradient"
                       }
                     >
-                      Book Package
+                      Reservar Pacote
                     </Button>
                   </div>
                 </div>
@@ -120,7 +120,7 @@ export default function Packages() {
         ) : (
           // No packages found
           <div className="col-span-3 text-center py-12">
-            <p className="text-lg text-gray-600">No packages found. Please check back later.</p>
+            <p className="text-lg text-gray-600">Nenhum pacote encontrado. Tente novamente mais tarde.</p>
           </div>
         )}
       </div>
@@ -128,7 +128,7 @@ export default function Packages() {
       <div className="mt-12 text-center">
         <Link href="/packages">
           <Button variant="outline" className="inline-flex items-center px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-medium transition">
-            View All Packages
+            Ver Todos os Pacotes
             <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>

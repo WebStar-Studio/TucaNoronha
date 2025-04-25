@@ -38,10 +38,9 @@ const LanguageSelector = ({ isTransparent = false }: LanguageSelectorProps) => {
         <Button 
           variant="ghost" 
           size="sm" 
-          className={`h-8 gap-1 text-sm ${isTransparent ? 'bg-white/90 hover:bg-white text-foreground shadow-sm' : ''}`}
+          className={`h-8 gap-1 text-sm ${isTransparent ? 'text-foreground shadow-sm bg-transparent' : ''}`}
         >
           <Globe className="h-4 w-4" />
-          <span className="hidden md:inline-flex">{t('common.language')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

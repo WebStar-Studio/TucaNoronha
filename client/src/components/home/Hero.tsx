@@ -25,7 +25,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&auto=format&fit=crop&w=2068&q=80" 
-          alt="Fernando de Noronha beach" 
+          alt="Praia de Fernando de Noronha" 
           className="w-full h-full object-cover transition-transform duration-10000 hover:scale-105" 
         />
         <div className="absolute inset-0 hero-gradient"></div>
@@ -40,7 +40,7 @@ export default function Hero() {
       <div className="relative z-10 h-full flex flex-col justify-center items-center text-white px-4 sm:px-6 lg:px-8">
         <div className={`transform transition-all duration-1000 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-montserrat font-bold text-center max-w-4xl leading-tight">
-            Discover the Paradise of{" "}
+            Descubra o Paraíso de{" "}
             <span className="text-accent relative">
               Fernando de Noronha
               <span className="absolute bottom-1 left-0 w-full h-1 bg-accent/50 animate-pulse-slow"></span>
@@ -50,7 +50,7 @@ export default function Hero() {
         
         <div className={`mt-6 transform transition-all duration-1000 delay-100 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <p className="text-xl sm:text-2xl text-center max-w-2xl text-white/90 font-inter">
-            Exclusive experiences in Brazil's most breathtaking archipelago
+            Experiências exclusivas no arquipélago mais deslumbrante do Brasil
           </p>
         </div>
         
@@ -61,7 +61,7 @@ export default function Hero() {
             className="px-8 py-6 rounded-full bg-white text-gray-800 hover:bg-gray-100 hover:text-gray-900 text-lg font-medium shadow-lg flex items-center transition-all hover:scale-105"
           >
             <Compass className="mr-2 h-5 w-5 animate-pulse-slow" />
-            Explore Experiences
+            Explore Experiências
             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
           
@@ -70,7 +70,7 @@ export default function Hero() {
             className="px-8 py-6 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 text-lg font-medium shadow-lg flex items-center transition-all hover:scale-105"
           >
             <Package className="mr-2 h-5 w-5 animate-pulse-slow" />
-            See Packages
+            Veja Pacotes
           </Button>
         </div>
         
@@ -79,7 +79,7 @@ export default function Hero() {
             href="#experiences" 
             className="flex items-center text-white hover:text-accent transition-colors group"
           >
-            <span>Scroll to discover</span>
+            <span>Role para descobrir</span>
             <ChevronDown className="ml-2 h-4 w-4 group-hover:translate-y-1 transition-transform animate-float" />
           </a>
         </div>

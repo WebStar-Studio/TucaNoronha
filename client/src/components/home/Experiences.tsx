@@ -42,14 +42,14 @@ export default function Experiences() {
       
       <div className={`text-center mb-16 transform transition-all duration-1000 ${isInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
         <span className="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4 animate-pulse-slow">
-          Explore Our Experiences
+          Explore Nossas Experiências
         </span>
         <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">
-          Unforgettable <span className="text-primary">Experiences</span>
+          Experiências <span className="text-primary">Inesquecíveis</span>
         </h2>
         <div className="w-24 h-1 bg-primary/30 mx-auto mt-4 rounded-full"></div>
-        <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
-          Discover the most extraordinary activities that Fernando de Noronha has to offer, handpicked by our local experts.
+        <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto" style={{textAlign: 'center'}}>
+          Descubra as atividades mais extraordinárias que Fernando de Noronha tem a oferecer, selecionadas por nossos especialistas locais.
         </p>
       </div>
       
@@ -128,7 +128,7 @@ export default function Experiences() {
                   
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex flex-col">
-                      <span className="text-sm text-gray-500">Starting from</span>
+                      <span className="text-sm text-gray-500">Começando por</span>
                       <span className="text-primary font-semibold text-lg">${experience.price.toFixed(0)}</span>
                     </div>
                     
@@ -140,7 +140,7 @@ export default function Experiences() {
                           : "accent-gradient rounded-full"
                       }
                     >
-                      <span>Book Now</span>
+                      <span>Reserve Agora</span>
                       <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Button>
                   </div>
@@ -151,7 +151,7 @@ export default function Experiences() {
         ) : (
           // No experiences found
           <div className="col-span-3 text-center py-12">
-            <p className="text-lg text-gray-600">No experiences found. Please check back later.</p>
+            <p className="text-lg text-gray-600">Nenhuma experiência encontrada. Tente novamente mais tarde.</p>
           </div>
         )}
       </div>
@@ -162,7 +162,7 @@ export default function Experiences() {
             variant="outline" 
             className="px-8 py-6 rounded-full bg-white border border-primary/20 text-primary hover:bg-primary hover:text-white font-medium shadow-lg transition-all hover:scale-105 group"
           >
-            View All Experiences
+            Ver Todas as Experiências
             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </Link>

@@ -13,9 +13,9 @@ export default function Accommodations() {
   return (
     <section className="py-20 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center mb-12 animate-slide-up">
-        <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Luxurious Stays</h2>
+        <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Hospedagens Luxuosas</h2>
         <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
-          Rest in comfort with our selection of premium accommodations that blend naturally with the island's beauty.
+          Descanse com conforto em nossa seleção de hospedagens premium que se integram à beleza natural da ilha.
         </p>
       </div>
       
@@ -96,7 +96,7 @@ export default function Accommodations() {
                           : "bg-white border border-primary text-primary hover:bg-primary hover:text-white"
                         }
                       >
-                        View Details
+                        Ver Detalhes
                       </Button>
                     </div>
                   </div>
@@ -107,7 +107,7 @@ export default function Accommodations() {
         ) : (
           // No accommodations found
           <div className="col-span-2 text-center py-12">
-            <p className="text-lg text-gray-600">No accommodations found. Please check back later.</p>
+            <p className="text-lg text-gray-600">Nenhuma hospedagem encontrada. Por favor, tente novamente mais tarde.</p>
           </div>
         )}
       </div>
@@ -115,7 +115,7 @@ export default function Accommodations() {
       <div className="mt-12 text-center">
         <Link href="/accommodations">
           <Button variant="outline" className="inline-flex items-center px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-medium transition">
-            View All Accommodations
+            Ver Todas as Hospedagens
             <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>

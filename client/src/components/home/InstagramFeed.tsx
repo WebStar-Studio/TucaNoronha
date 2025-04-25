@@ -43,8 +43,8 @@ export default function InstagramFeed() {
   return (
     <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center mb-10 animate-slide-up">
-        <h2 className="text-2xl sm:text-3xl font-montserrat font-medium text-foreground">#ExperienceNoronha</h2>
-        <p className="mt-2 text-gray-600">Follow us on Instagram for daily doses of paradise</p>
+        <h2 className="text-2xl sm:text-3xl font-montserrat font-medium text-foreground">#VivaNoronha</h2>
+        <p className="mt-2 text-gray-600">Siga-nos no Instagram para doses diárias de paraíso</p>
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">

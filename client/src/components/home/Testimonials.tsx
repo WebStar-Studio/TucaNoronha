@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 export default function Testimonials() {
   const testimonials = [
     {
-      content: "The Dolphin Bay Tour was the highlight of our trip! The guides were knowledgeable and passionate, making sure we had the perfect experience while respecting the marine life.",
+      content: "O Passeio à Baía dos Golfinhos foi o ponto alto da nossa viagem! Os guias eram experientes e apaixonados, garantindo uma experiência perfeita e respeitando a vida marinha.",
       name: "Sophia Garcia",
       date: "May 2023",
       avatar: "https://randomuser.me/api/portraits/women/54.jpg",
@@ -13,7 +13,7 @@ export default function Testimonials() {
       delay: "0.1s"
     },
     {
-      content: "Staying at the Oceanfront Villa Serenity was a dream come true. The views were spectacular, and the staff went above and beyond to ensure our comfort. Worth every penny!",
+      content: "Ficar na Villa Serenity à beira-mar foi um sonho realizado. As vistas eram espetaculares e a equipe fez de tudo para garantir nosso conforto. Valeu cada centavo!",
       name: "James Wilson",
       date: "June 2023",
       avatar: "https://randomuser.me/api/portraits/men/32.jpg",
@@ -21,7 +21,7 @@ export default function Testimonials() {
       delay: "0.2s"
     },
     {
-      content: "The luxury sunset sailing exceeded our expectations. The crew was professional, the catamaran was immaculate, and the sunset views with champagne were absolutely magical.",
+      content: "O passeio de catamarã ao pôr do sol superou nossas expectativas. A tripulação foi profissional, o catamarã impecável e a vista do pôr do sol com espumante foi simplesmente mágica.",
       name: "Emma Thompson",
       date: "July 2023",
       avatar: "https://randomuser.me/api/portraits/women/28.jpg",
@@ -34,9 +34,9 @@ export default function Testimonials() {
     <section className="py-20 sm:py-24 lg:py-28 bg-gradient-to-r from-primary/5 to-secondary/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-slide-up">
-          <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Guest Experiences</h2>
+          <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Experiências dos Hóspedes</h2>
           <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
-            Hear what our guests have to say about their unforgettable journeys in Fernando de Noronha.
+            Veja o que nossos hóspedes dizem sobre suas jornadas inesquecíveis em Fernando de Noronha.
           </p>
         </div>
         

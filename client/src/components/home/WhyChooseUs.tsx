@@ -5,29 +5,29 @@ export default function WhyChooseUs() {
   const features = [
     {
       icon: <MapPin className="text-xl" />,
-      title: "Local Expertise",
-      description: "Our guides are born and raised in Fernando de Noronha, offering authentic insights and hidden gems.",
+      title: "Especialistas Locais",
+      description: "Nossos guias nasceram e cresceram em Fernando de Noronha, oferecendo dicas autênticas e segredos da ilha.",
       color: "bg-primary/10 text-primary",
       delay: "0.1s"
     },
     {
       icon: <Leaf className="text-xl" />,
-      title: "Eco-Conscious",
-      description: "All our experiences are designed with sustainability and environmental protection in mind.",
+      title: "Eco-Consciente",
+      description: "Todas as nossas experiências são pensadas para sustentabilidade e proteção ambiental.",
       color: "bg-secondary/10 text-secondary",
       delay: "0.2s"
     },
     {
       icon: <Globe className="text-xl" />,
-      title: "Premium Service",
-      description: "Enjoy personalized attention and luxurious details that make your experience unforgettable.",
+      title: "Serviço Premium",
+      description: "Aproveite atenção personalizada e detalhes de luxo para tornar sua experiência inesquecível.",
       color: "bg-accent/10 text-accent",
       delay: "0.3s"
     },
     {
       icon: <Shield className="text-xl" />,
-      title: "Secure Booking",
-      description: "Our platform ensures your personal information is protected with advanced security measures.",
+      title: "Reserva Segura",
+      description: "Nossa plataforma garante que suas informações estejam protegidas com medidas avançadas de segurança.",
       color: "bg-primary/10 text-primary",
       delay: "0.4s"
     }
@@ -37,9 +37,9 @@ export default function WhyChooseUs() {
     <section className="py-20 sm:py-24 lg:py-28 bg-gradient-to-r from-primary/5 to-secondary/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-slide-up">
-          <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Why Choose Tuca Noronha</h2>
+          <h2 className="text-3xl sm:text-4xl font-montserrat font-bold text-foreground">Por que Escolher a Tuca Noronha</h2>
           <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
-            Experience Fernando de Noronha like never before with our premium services and exclusive benefits.
+            Viva Fernando de Noronha como nunca antes com nossos serviços premium e benefícios exclusivos.
           </p>
         </div>
         
