@@ -31,6 +31,7 @@ function Router() {
         <Route path="/packages" component={PackagesPage} />
         <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/admin" component={Admin} adminOnly={true} />
+        <Route path="/signup" component={SignUp} />
         <Route component={NotFound} />
       </Switch>
       <Footer />
