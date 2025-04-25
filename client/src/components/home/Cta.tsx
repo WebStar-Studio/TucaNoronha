@@ -41,7 +41,7 @@ export default function Cta() {
           </Button>
           <Button 
             variant="outline" 
-            className="px-8 py-4 border-2 border-white rounded-full text-base font-medium text-white hover:bg-white hover:text-foreground transition"
+            className="px-8 py-4 border-2 border-white rounded-full text-base font-medium text-foreground transition"
             onClick={() => setLocation('/contact')}
           >
             Falar com um Especialista
