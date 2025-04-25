@@ -160,7 +160,7 @@ export default function Navbar() {
                 <Button
                   variant="ghost"
                   className={`${scrolled ? "text-primary" : "text-white"}`}
-                  onClick={() => setLocation("/signin")}
+                  onClick={() => setLocation("/auth")}
                 >
                   {t('common.login')}
                 </Button>
@@ -171,7 +171,7 @@ export default function Navbar() {
                       ? "btn-gradient"
                       : "border-white text-gray-800 bg-white/80 hover:bg-white hover:text-gray-900"
                   }
-                  onClick={() => setLocation("/signup")}
+                  onClick={() => setLocation("/auth")}
                 >
                   {t('common.register')}
                 </Button>
@@ -306,7 +306,7 @@ export default function Navbar() {
                   variant="outline"
                   className="w-full justify-start"
                   onClick={() => {
-                    setLocation("/signin");
+                    setLocation("/auth");
                     closeMenu();
                   }}
                 >
@@ -315,7 +315,7 @@ export default function Navbar() {
                 <Button
                   className="w-full btn-gradient"
                   onClick={() => {
-                    setLocation("/signup");
+                    setLocation("/auth");
                     closeMenu();
                   }}
                 >
