@@ -27,7 +27,7 @@ export function ProtectedRoute({
         }
 
         if (!user) {
-          return <Redirect to="/signin" />;
+          return <Redirect to="/auth" />;
         }
 
         if (adminOnly && user.role !== "admin") {

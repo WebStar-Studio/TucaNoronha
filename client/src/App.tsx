@@ -24,8 +24,7 @@ function Router() {
       <Navbar />
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/signin" component={SignIn} />
-        <Route path="/signup" component={SignUp} />
+        <Route path="/auth" component={SignIn} />
         <Route path="/reset-password" component={ResetPassword} />
         <Route path="/experiences" component={ExperiencesPage} />
         <Route path="/accommodations" component={AccommodationsPage} />
