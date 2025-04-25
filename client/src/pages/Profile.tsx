@@ -201,22 +201,19 @@ export default function Profile() {
               </div>
               <h2 className="text-xl font-semibold">{user.firstName} {user.lastName}</h2>
               <p className="text-gray-500">{user.email}</p>
-              
-              <div className="w-full mt-6">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="profile" onClick={() => setActiveTab("profile")}>
-                    Profile
-                  </TabsTrigger>
-                  <TabsTrigger value="security" onClick={() => setActiveTab("security")}>
-                    Security
-                  </TabsTrigger>
-                </TabsList>
-              </div>
             </CardContent>
           </Card>
           
           <div className="w-full md:w-2/3">
             <Tabs value={activeTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="profile" onClick={() => setActiveTab("profile")}>
+                  Profile
+                </TabsTrigger>
+                <TabsTrigger value="security" onClick={() => setActiveTab("security")}>
+                  Security
+                </TabsTrigger>
+              </TabsList>
               <TabsContent value="profile">
                 <Card>
                   <CardHeader>
