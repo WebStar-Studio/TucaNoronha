@@ -1,6 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Card, 
@@ -17,6 +18,7 @@ import PackageForm from "@/components/admin/PackageForm";
 export default function Admin() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -48,61 +50,66 @@ export default function Admin() {
     return null;
   }
 
-  return (
-    <div className="min-h-screen pt-24 pb-16 bg-background">
-      <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-        
-        <Tabs defaultValue="experiences" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="experiences">Experiences</TabsTrigger>
-            <TabsTrigger value="accommodations">Accommodations</TabsTrigger>
-            <TabsTrigger value="packages">Packages</TabsTrigger>
-          </TabsList>
+  // Usando useMemo para evitar re-renderizações excessivas
+  const tabContent = useMemo(() => {
+    return (
+      <div className="min-h-screen pt-24 pb-16 bg-background">
+        <div className="max-w-7xl mx-auto px-4">
+          <h1 className="text-3xl font-bold mb-6">{t('admin.dashboard')}</h1>
           
-          <TabsContent value="experiences">
-            <Card>
-              <CardHeader>
-                <CardTitle>Add New Experience</CardTitle>
-                <CardDescription>
-                  Create a new experience for tourists to enjoy
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ExperienceForm />
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="accommodations">
-            <Card>
-              <CardHeader>
-                <CardTitle>Add New Accommodation</CardTitle>
-                <CardDescription>
-                  Create a new accommodation option for visitors
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <AccommodationForm />
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="packages">
-            <Card>
-              <CardHeader>
-                <CardTitle>Add New Package</CardTitle>
-                <CardDescription>
-                  Create a new travel package combining multiple services
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <PackageForm />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          <Tabs defaultValue="experiences" className="w-full">
+            <TabsList className="mb-6">
+              <TabsTrigger value="experiences">{t('admin.experiences')}</TabsTrigger>
+              <TabsTrigger value="accommodations">{t('admin.accommodations')}</TabsTrigger>
+              <TabsTrigger value="packages">{t('admin.packages')}</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="experiences">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('admin.newExperience')}</CardTitle>
+                  <CardDescription>
+                    {t('admin.createExperienceDesc')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ExperienceForm />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="accommodations">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('admin.newAccommodation')}</CardTitle>
+                  <CardDescription>
+                    {t('admin.createAccommodationDesc')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <AccommodationForm />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="packages">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('admin.newPackage')}</CardTitle>
+                  <CardDescription>
+                    {t('admin.createPackageDesc')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <PackageForm />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }, [t]); // Dependência apenas da função de tradução
+  
+  return tabContent;
 }

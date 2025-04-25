@@ -192,13 +192,20 @@
     }
   },
   "admin": {
-    "dashboard": {
-      "title": "Admin Dashboard",
-      "stats": "Statistics",
-      "bookings": "Bookings",
-      "users": "Users",
-      "content": "Content Management"
-    },
+    "dashboard": "Admin Dashboard",
+    "experiences": "Experiences",
+    "accommodations": "Accommodations",
+    "packages": "Packages",
+    "newExperience": "Add New Experience",
+    "newAccommodation": "Add New Accommodation",
+    "newPackage": "Add New Package",
+    "createExperienceDesc": "Create a new experience for tourists to enjoy",
+    "createAccommodationDesc": "Create a new accommodation option for visitors",
+    "createPackageDesc": "Create a new travel package combining multiple services",
+    "stats": "Statistics",
+    "bookings": "Bookings",
+    "users": "Users",
+    "content": "Content Management",
     "content": {
       "experiences": "Manage Experiences",
       "accommodations": "Manage Accommodations",
