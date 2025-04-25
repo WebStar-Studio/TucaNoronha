@@ -52,7 +52,6 @@ export default function Profile() {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [activeTab, setActiveTab] = useState("profile");
 
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -205,12 +204,12 @@ export default function Profile() {
           </Card>
           
           <div className="w-full md:w-2/3">
-            <Tabs value={activeTab} className="w-full">
+            <Tabs defaultValue="profile" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="profile" onClick={() => setActiveTab("profile")}>
+                <TabsTrigger value="profile">
                   Profile
                 </TabsTrigger>
-                <TabsTrigger value="security" onClick={() => setActiveTab("security")}>
+                <TabsTrigger value="security">
                   Security
                 </TabsTrigger>
               </TabsList>
