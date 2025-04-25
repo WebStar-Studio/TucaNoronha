@@ -1,0 +1,227 @@
+{
+  "common": {
+    "home": "Início",
+    "experiences": "Experiências",
+    "accommodations": "Acomodações",
+    "packages": "Pacotes",
+    "profile": "Perfil",
+    "admin": "Painel de Administração",
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "logout": "Sair",
+    "search": "Buscar",
+    "favorites": "Favoritos",
+    "language": "Idioma",
+    "welcome": "Bem-vindo a Fernando de Noronha",
+    "bookNow": "Reservar Agora",
+    "learnMore": "Saiba Mais",
+    "viewAll": "Ver Todos",
+    "backToHome": "Voltar ao Início",
+    "error": "Erro",
+    "loading": "Carregando...",
+    "notFound": "Página Não Encontrada",
+    "english": "Inglês",
+    "portuguese": "Português",
+    "spanish": "Espanhol"
+  },
+  "home": {
+    "hero": {
+      "title": "Descubra o Paraíso",
+      "subtitle": "Experimente a beleza de Fernando de Noronha",
+      "cta": "Explorar Agora"
+    },
+    "featured": {
+      "title": "Experiências em Destaque",
+      "subtitle": "Descubra o melhor de Fernando de Noronha"
+    },
+    "testimonials": {
+      "title": "O Que Nossos Visitantes Dizem",
+      "subtitle": "Ouça de viajantes que vivenciaram nosso paraíso"
+    },
+    "newsletter": {
+      "title": "Mantenha-se Atualizado",
+      "subtitle": "Inscreva-se para receber as últimas notícias e ofertas",
+      "placeholder": "Seu endereço de e-mail",
+      "button": "Inscrever-se",
+      "success": "Obrigado por se inscrever!",
+      "error": "Ocorreu um erro. Por favor, tente novamente."
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Entrar",
+      "subtitle": "Bem-vindo de volta a Fernando de Noronha",
+      "email": "E-mail",
+      "password": "Senha",
+      "forgotPassword": "Esqueceu a Senha?",
+      "button": "Entrar",
+      "noAccount": "Não tem uma conta?",
+      "register": "Cadastre-se Agora",
+      "error": "E-mail ou senha inválidos"
+    },
+    "signUp": {
+      "title": "Criar Conta",
+      "subtitle": "Junte-se a nós para começar sua aventura em Fernando de Noronha",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "email": "E-mail",
+      "password": "Senha",
+      "confirmPassword": "Confirmar Senha",
+      "terms": "Eu concordo com os Termos e Condições",
+      "button": "Criar Conta",
+      "hasAccount": "Já tem uma conta?",
+      "login": "Entrar",
+      "success": "Conta criada com sucesso!",
+      "error": "Ocorreu um erro ao criar sua conta"
+    }
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "personalInfo": "Informações Pessoais",
+    "bookings": "Minhas Reservas",
+    "favorites": "Meus Favoritos",
+    "settings": "Configurações",
+    "editProfile": "Editar Perfil",
+    "changePassword": "Alterar Senha",
+    "language": "Preferência de Idioma",
+    "notification": "Configurações de Notificação",
+    "deleteAccount": "Excluir Conta",
+    "logout": "Sair"
+  },
+  "experiences": {
+    "title": "Experiências Inesquecíveis",
+    "subtitle": "Descubra atividades que tornarão sua visita memorável",
+    "filters": {
+      "title": "Filtros",
+      "price": "Faixa de Preço",
+      "duration": "Duração",
+      "category": "Categoria",
+      "rating": "Avaliação",
+      "apply": "Aplicar Filtros",
+      "clear": "Limpar Filtros"
+    },
+    "sortBy": {
+      "title": "Ordenar Por",
+      "priceAsc": "Preço: Menor para Maior",
+      "priceDesc": "Preço: Maior para Menor",
+      "rating": "Avaliação",
+      "popularity": "Popularidade",
+      "newest": "Mais Recentes"
+    },
+    "details": {
+      "duration": "Duração",
+      "includes": "O que está Incluído",
+      "price": "Preço",
+      "location": "Localização",
+      "rating": "Avaliação",
+      "reviews": "Avaliações",
+      "availability": "Verificar Disponibilidade",
+      "book": "Reservar Esta Experiência",
+      "addToFavorites": "Adicionar aos Favoritos",
+      "removeFromFavorites": "Remover dos Favoritos",
+      "share": "Compartilhar",
+      "recommendations": "Você Também Pode Gostar"
+    }
+  },
+  "accommodations": {
+    "title": "Onde Ficar",
+    "subtitle": "Encontre a acomodação perfeita para sua estadia",
+    "filters": {
+      "title": "Filtros",
+      "priceRange": "Faixa de Preço",
+      "propertyType": "Tipo de Propriedade",
+      "amenities": "Comodidades",
+      "capacity": "Capacidade",
+      "location": "Localização",
+      "apply": "Aplicar Filtros",
+      "clear": "Limpar Filtros"
+    },
+    "sortBy": {
+      "title": "Ordenar Por",
+      "priceAsc": "Preço: Menor para Maior",
+      "priceDesc": "Preço: Maior para Menor",
+      "rating": "Avaliação",
+      "popularity": "Popularidade"
+    },
+    "details": {
+      "amenities": "Comodidades",
+      "price": "Preço por noite",
+      "location": "Localização",
+      "rating": "Avaliação",
+      "reviews": "Avaliações",
+      "capacity": "Capacidade",
+      "bedrooms": "Quartos",
+      "availability": "Verificar Disponibilidade",
+      "book": "Reservar Esta Acomodação",
+      "addToFavorites": "Adicionar aos Favoritos",
+      "removeFromFavorites": "Remover dos Favoritos",
+      "share": "Compartilhar",
+      "recommendations": "Propriedades Similares"
+    }
+  },
+  "packages": {
+    "title": "Pacotes de Viagem",
+    "subtitle": "Experiências completas para uma estadia inesquecível",
+    "filters": {
+      "title": "Filtros",
+      "priceRange": "Faixa de Preço",
+      "duration": "Duração",
+      "includes": "Inclui",
+      "apply": "Aplicar Filtros",
+      "clear": "Limpar Filtros"
+    },
+    "sortBy": {
+      "title": "Ordenar Por",
+      "priceAsc": "Preço: Menor para Maior",
+      "priceDesc": "Preço: Maior para Menor",
+      "duration": "Duração",
+      "popularity": "Popularidade"
+    },
+    "details": {
+      "duration": "Duração",
+      "includes": "O que está Incluído",
+      "price": "Preço",
+      "itinerary": "Itinerário",
+      "accommodation": "Acomodação",
+      "availability": "Verificar Disponibilidade",
+      "book": "Reservar Este Pacote",
+      "addToFavorites": "Adicionar aos Favoritos",
+      "removeFromFavorites": "Remover dos Favoritos",
+      "share": "Compartilhar",
+      "recommendations": "Pacotes Similares"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Painel de Administração",
+      "stats": "Estatísticas",
+      "bookings": "Reservas",
+      "users": "Usuários",
+      "content": "Gerenciamento de Conteúdo"
+    },
+    "content": {
+      "experiences": "Gerenciar Experiências",
+      "accommodations": "Gerenciar Acomodações",
+      "packages": "Gerenciar Pacotes",
+      "restaurants": "Gerenciar Restaurantes",
+      "vehicles": "Gerenciar Aluguel de Veículos",
+      "testimonials": "Gerenciar Depoimentos"
+    },
+    "form": {
+      "title": "Título",
+      "description": "Descrição",
+      "price": "Preço",
+      "duration": "Duração",
+      "image": "URL da Imagem",
+      "featured": "Destacado",
+      "location": "Localização",
+      "tags": "Tags",
+      "uploadImage": "Carregar Imagem",
+      "create": "Criar",
+      "update": "Atualizar",
+      "delete": "Deletar",
+      "cancel": "Cancelar",
+      "save": "Salvar Alterações"
+    }
+  }
+}

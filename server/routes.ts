@@ -502,7 +502,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/vehicles/:id', async (req, res) => {
+  app.delete('/api/vehicles/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingVehicle = await storage.getVehicleById(id);
@@ -556,7 +556,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/restaurants', async (req, res) => {
+  app.post('/api/restaurants', requireAdmin, async (req, res) => {
     try {
       const result = insertRestaurantSchema.safeParse(req.body);
       if (!result.success) {
@@ -571,7 +571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/restaurants/:id', async (req, res) => {
+  app.patch('/api/restaurants/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingRestaurant = await storage.getRestaurantById(id);
@@ -593,7 +593,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/restaurants/:id', async (req, res) => {
+  app.delete('/api/restaurants/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingRestaurant = await storage.getRestaurantById(id);
@@ -654,23 +654,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/testimonials/:id/approve', async (req, res) => {
+  app.patch('/api/testimonials/:id/approve', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingTestimonial = await storage.getTestimonialById(id);
       
       if (!existingTestimonial) {
         return res.status(404).json({ message: 'Testimonial not found' });
-      }
-      
-      // Only admins can approve testimonials
-      if (!req.session.userId) {
-        return res.status(401).json({ message: 'Authentication required' });
-      }
-      
-      const user = await storage.getUser(req.session.userId);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ message: 'Admin access required' });
       }
       
       const updatedTestimonial = await storage.approveTestimonial(id);

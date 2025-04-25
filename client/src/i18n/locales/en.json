@@ -1,0 +1,227 @@
+{
+  "common": {
+    "home": "Home",
+    "experiences": "Experiences",
+    "accommodations": "Accommodations",
+    "packages": "Packages",
+    "profile": "Profile",
+    "admin": "Admin Dashboard",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "search": "Search",
+    "favorites": "Favorites",
+    "language": "Language",
+    "welcome": "Welcome to Fernando de Noronha",
+    "bookNow": "Book Now",
+    "learnMore": "Learn More",
+    "viewAll": "View All",
+    "backToHome": "Back to Home",
+    "error": "Error",
+    "loading": "Loading...",
+    "notFound": "Page Not Found",
+    "english": "English",
+    "portuguese": "Portuguese",
+    "spanish": "Spanish"
+  },
+  "home": {
+    "hero": {
+      "title": "Discover Paradise",
+      "subtitle": "Experience the beauty of Fernando de Noronha",
+      "cta": "Explore Now"
+    },
+    "featured": {
+      "title": "Featured Experiences",
+      "subtitle": "Discover the best of Fernando de Noronha"
+    },
+    "testimonials": {
+      "title": "What Our Visitors Say",
+      "subtitle": "Hear from travelers who have experienced our paradise"
+    },
+    "newsletter": {
+      "title": "Stay Updated",
+      "subtitle": "Subscribe to receive the latest news and offers",
+      "placeholder": "Your email address",
+      "button": "Subscribe",
+      "success": "Thank you for subscribing!",
+      "error": "An error occurred. Please try again."
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "subtitle": "Welcome back to Fernando de Noronha",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Forgot Password?",
+      "button": "Sign In",
+      "noAccount": "Don't have an account?",
+      "register": "Register Now",
+      "error": "Invalid email or password"
+    },
+    "signUp": {
+      "title": "Create Account",
+      "subtitle": "Join us to start your Fernando de Noronha adventure",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "terms": "I agree to the Terms and Conditions",
+      "button": "Create Account",
+      "hasAccount": "Already have an account?",
+      "login": "Sign In",
+      "success": "Account created successfully!",
+      "error": "An error occurred while creating your account"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Information",
+    "bookings": "My Bookings",
+    "favorites": "My Favorites",
+    "settings": "Settings",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "language": "Language Preference",
+    "notification": "Notification Settings",
+    "deleteAccount": "Delete Account",
+    "logout": "Logout"
+  },
+  "experiences": {
+    "title": "Unforgettable Experiences",
+    "subtitle": "Discover activities that will make your visit memorable",
+    "filters": {
+      "title": "Filters",
+      "price": "Price Range",
+      "duration": "Duration",
+      "category": "Category",
+      "rating": "Rating",
+      "apply": "Apply Filters",
+      "clear": "Clear Filters"
+    },
+    "sortBy": {
+      "title": "Sort By",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "rating": "Rating",
+      "popularity": "Popularity",
+      "newest": "Newest"
+    },
+    "details": {
+      "duration": "Duration",
+      "includes": "What's Included",
+      "price": "Price",
+      "location": "Location",
+      "rating": "Rating",
+      "reviews": "Reviews",
+      "availability": "Check Availability",
+      "book": "Book This Experience",
+      "addToFavorites": "Add to Favorites",
+      "removeFromFavorites": "Remove from Favorites",
+      "share": "Share",
+      "recommendations": "You Might Also Like"
+    }
+  },
+  "accommodations": {
+    "title": "Where to Stay",
+    "subtitle": "Find the perfect accommodation for your stay",
+    "filters": {
+      "title": "Filters",
+      "priceRange": "Price Range",
+      "propertyType": "Property Type",
+      "amenities": "Amenities",
+      "capacity": "Capacity",
+      "location": "Location",
+      "apply": "Apply Filters",
+      "clear": "Clear Filters"
+    },
+    "sortBy": {
+      "title": "Sort By",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "rating": "Rating",
+      "popularity": "Popularity"
+    },
+    "details": {
+      "amenities": "Amenities",
+      "price": "Price per night",
+      "location": "Location",
+      "rating": "Rating",
+      "reviews": "Reviews",
+      "capacity": "Capacity",
+      "bedrooms": "Bedrooms",
+      "availability": "Check Availability",
+      "book": "Book This Accommodation",
+      "addToFavorites": "Add to Favorites",
+      "removeFromFavorites": "Remove from Favorites",
+      "share": "Share",
+      "recommendations": "Similar Properties"
+    }
+  },
+  "packages": {
+    "title": "Vacation Packages",
+    "subtitle": "Complete experiences for an unforgettable stay",
+    "filters": {
+      "title": "Filters",
+      "priceRange": "Price Range",
+      "duration": "Duration",
+      "includes": "Includes",
+      "apply": "Apply Filters",
+      "clear": "Clear Filters"
+    },
+    "sortBy": {
+      "title": "Sort By",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "duration": "Duration",
+      "popularity": "Popularity"
+    },
+    "details": {
+      "duration": "Duration",
+      "includes": "What's Included",
+      "price": "Price",
+      "itinerary": "Itinerary",
+      "accommodation": "Accommodation",
+      "availability": "Check Availability",
+      "book": "Book This Package",
+      "addToFavorites": "Add to Favorites",
+      "removeFromFavorites": "Remove from Favorites",
+      "share": "Share",
+      "recommendations": "Similar Packages"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "stats": "Statistics",
+      "bookings": "Bookings",
+      "users": "Users",
+      "content": "Content Management"
+    },
+    "content": {
+      "experiences": "Manage Experiences",
+      "accommodations": "Manage Accommodations",
+      "packages": "Manage Packages",
+      "restaurants": "Manage Restaurants",
+      "vehicles": "Manage Vehicle Rentals",
+      "testimonials": "Manage Testimonials"
+    },
+    "form": {
+      "title": "Title",
+      "description": "Description",
+      "price": "Price",
+      "duration": "Duration",
+      "image": "Image URL",
+      "featured": "Featured",
+      "location": "Location",
+      "tags": "Tags",
+      "uploadImage": "Upload Image",
+      "create": "Create",
+      "update": "Update",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "save": "Save Changes"
+    }
+  }
+}
