@@ -42,18 +42,28 @@ export default function SignInForm() {
 
   const onSubmit = async (data: SignInFormValues) => {
     try {
+      console.log("Submitting login form:", {
+        email: data.email,
+        password: data.password
+      });
+      
       const response = await loginMutation.mutateAsync({
         email: data.email,
         password: data.password
       });
       
+      console.log("Login response:", response);
+      
       // Redirect based on user role
       if (response.user && response.user.role === 'admin') {
+        console.log("Redirecting to admin page");
         setLocation('/admin');
       } else {
+        console.log("Redirecting to dashboard");
         setLocation('/dashboard');
       }
     } catch (err) {
+      console.error("Login error:", err);
       // Error is already handled in the mutation's onError callback
     }
   };
@@ -121,10 +131,10 @@ export default function SignInForm() {
             {loginMutation.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t('auth.signingIn', 'Signing In...')}
+                {t('auth.signingIn', 'Entrando...')}
               </>
             ) : (
-              t('auth.signIn', 'Sign In')
+              t('auth.signIn', 'Entrar')
             )}
           </Button>
         </form>

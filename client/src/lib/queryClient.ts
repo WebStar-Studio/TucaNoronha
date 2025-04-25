@@ -12,12 +12,14 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  console.log(`Making ${method} request to ${url}:`, data);
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
+  console.log(`Response from ${url}:`, res.status);
 
   await throwIfResNotOk(res);
   return res;
@@ -29,16 +31,21 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    console.log(`Making GET request to ${queryKey[0]}`);
     const res = await fetch(queryKey[0] as string, {
       credentials: "include",
     });
+    console.log(`Response from ${queryKey[0]}:`, res.status);
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+      console.log(`Returning null due to 401 response from ${queryKey[0]}`);
       return null;
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+    const data = await res.json();
+    console.log(`Data from ${queryKey[0]}:`, data);
+    return data;
   };
 
 export const queryClient = new QueryClient({
