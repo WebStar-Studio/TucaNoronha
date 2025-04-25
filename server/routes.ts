@@ -27,6 +27,33 @@ interface RequestWithSession extends Request {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Middleware setup
+  // Auth middleware for protected routes
+  const requireAuth = (req: RequestWithSession, res: Response, next: NextFunction): Response | void => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+    next();
+  };
+
+  // Middleware to check if user is an admin
+  const requireAdmin = async (req: RequestWithSession, res: Response, next: NextFunction): Promise<Response | void> => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+    
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Admin access required' });
+      }
+      next();
+    } catch (error) {
+      console.error('Admin check error:', error);
+      return res.status(500).json({ message: 'Server error' });
+    }
+  };
+  
   // AUTH ROUTES
   app.post('/api/auth/register', async (req: RequestWithSession, res: Response) => {
     try {
@@ -175,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/experiences', async (req, res) => {
+  app.post('/api/experiences', requireAdmin, async (req, res) => {
     try {
       const result = insertExperienceSchema.safeParse(req.body);
       if (!result.success) {
@@ -190,7 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/experiences/:id', async (req, res) => {
+  app.patch('/api/experiences/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingExperience = await storage.getExperienceById(id);
@@ -212,7 +239,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/experiences/:id', async (req, res) => {
+  app.delete('/api/experiences/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingExperience = await storage.getExperienceById(id);
@@ -266,7 +293,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/accommodations', async (req, res) => {
+  app.post('/api/accommodations', requireAdmin, async (req, res) => {
     try {
       const result = insertAccommodationSchema.safeParse(req.body);
       if (!result.success) {
@@ -281,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/accommodations/:id', async (req, res) => {
+  app.patch('/api/accommodations/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingAccommodation = await storage.getAccommodationById(id);
@@ -303,7 +330,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/accommodations/:id', async (req, res) => {
+  app.delete('/api/accommodations/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingAccommodation = await storage.getAccommodationById(id);
@@ -357,7 +384,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/packages', async (req, res) => {
+  app.post('/api/packages', requireAdmin, async (req, res) => {
     try {
       const result = insertPackageSchema.safeParse(req.body);
       if (!result.success) {
@@ -372,7 +399,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/packages/:id', async (req, res) => {
+  app.patch('/api/packages/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingPackage = await storage.getPackageById(id);
@@ -394,7 +421,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/packages/:id', async (req, res) => {
+  app.delete('/api/packages/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingPackage = await storage.getPackageById(id);
@@ -438,7 +465,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/vehicles', async (req, res) => {
+  app.post('/api/vehicles', requireAdmin, async (req, res) => {
     try {
       const result = insertVehicleRentalSchema.safeParse(req.body);
       if (!result.success) {
@@ -453,7 +480,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/vehicles/:id', async (req, res) => {
+  app.patch('/api/vehicles/:id', requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const existingVehicle = await storage.getVehicleById(id);
@@ -655,13 +682,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // FAVORITES ROUTES
-  // Auth middleware for protected routes
-  const requireAuth = (req: RequestWithSession, res: Response, next: NextFunction): Response | void => {
-    if (!req.session.userId) {
-      return res.status(401).json({ message: 'Authentication required' });
-    }
-    next();
-  };
 
   // Get all favorites for the logged in user
   app.get('/api/favorites', requireAuth, async (req: RequestWithSession, res: Response) => {
