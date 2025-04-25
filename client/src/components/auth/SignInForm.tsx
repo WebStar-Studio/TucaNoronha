@@ -43,7 +43,7 @@ export default function SignInForm() {
   const onSubmit = async (data: SignInFormValues) => {
     try {
       const response = await loginMutation.mutateAsync({
-        username: data.email, // API expects username, but our form uses email
+        email: data.email,
         password: data.password
       });
       

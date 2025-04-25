@@ -23,7 +23,7 @@ type AuthContextType = {
 };
 
 type LoginData = {
-  username: string; // Actually expecting email, but our API uses 'username' field
+  email: string;
   password: string;
 };
 
