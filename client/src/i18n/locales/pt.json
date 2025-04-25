@@ -192,13 +192,20 @@
     }
   },
   "admin": {
-    "dashboard": {
-      "title": "Painel de Administração",
-      "stats": "Estatísticas",
-      "bookings": "Reservas",
-      "users": "Usuários",
-      "content": "Gerenciamento de Conteúdo"
-    },
+    "dashboard": "Painel de Administração",
+    "experiences": "Experiências",
+    "accommodations": "Acomodações",
+    "packages": "Pacotes",
+    "newExperience": "Adicionar Nova Experiência",
+    "newAccommodation": "Adicionar Nova Acomodação",
+    "newPackage": "Adicionar Novo Pacote",
+    "createExperienceDesc": "Crie uma nova experiência para os turistas aproveitarem",
+    "createAccommodationDesc": "Crie uma nova opção de acomodação para visitantes",
+    "createPackageDesc": "Crie um novo pacote de viagem combinando múltiplos serviços",
+    "stats": "Estatísticas",
+    "bookings": "Reservas",
+    "users": "Usuários",
+    "content": "Gerenciamento de Conteúdo",
     "content": {
       "experiences": "Gerenciar Experiências",
       "accommodations": "Gerenciar Acomodações",
