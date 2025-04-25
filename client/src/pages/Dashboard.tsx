@@ -26,19 +26,19 @@ export default function Dashboard() {
   // Fetch data
   const { data: experiences, isLoading: isLoadingExperiences } = useQuery<Experience[]>({
     queryKey: ["/api/experiences/featured"],
-    queryFn: getQueryFn({}),
+    queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!user,
   });
 
   const { data: accommodations, isLoading: isLoadingAccommodations } = useQuery<Accommodation[]>({
     queryKey: ["/api/accommodations/featured"],
-    queryFn: getQueryFn({}),
+    queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!user,
   });
 
   const { data: packages, isLoading: isLoadingPackages } = useQuery<TravelPackage[]>({
     queryKey: ["/api/packages/featured"],
-    queryFn: getQueryFn({}),
+    queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!user,
   });
 
