@@ -306,7 +306,7 @@ export default function Navbar() {
                   variant="outline"
                   className="w-full justify-start"
                   onClick={() => {
-                    setLocation("/auth");
+                    setLocation("/signin");
                     closeMenu();
                   }}
                 >
@@ -315,7 +315,7 @@ export default function Navbar() {
                 <Button
                   className="w-full btn-gradient"
                   onClick={() => {
-                    setLocation("/auth");
+                    setLocation("/signup");
                     closeMenu();
                   }}
                 >
