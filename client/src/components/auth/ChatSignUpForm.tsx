@@ -152,10 +152,8 @@ export default function ChatSignUpForm() {
       // Show completion screen
       setRegistrationStep('completed');
       
-      // Redirect to profile page after 2 seconds
-      setTimeout(() => {
-        setLocation('/profile');
-      }, 2000);
+      // Removed redirect to profile as parent component will handle it
+      // This prevents infinite update loops with parent component
       
     } catch (err) {
       // Error is already handled in the auth store
